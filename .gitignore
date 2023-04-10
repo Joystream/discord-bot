@@ -1,0 +1,6 @@
+src/qntype*
+.DS_Store
+node_modules
+lib
+dist
+.env
