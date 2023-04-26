@@ -1,4 +1,4 @@
-import { Client, Intents } from "discord.js";
+import { Client, Intents } from 'discord.js';
 // import { ApiPromise } from "@polkadot/api";
 // import { EventRecord } from "@polkadot/types/interfaces";
 // import { wsLocation } from "../../config";
@@ -36,11 +36,10 @@ import { Client, Intents } from "discord.js";
 
 const discordBotToken = process.env.TOKEN || undefined; // environment variable TOKEN must be set
 
-;(async () => {
-
+(async () => {
   const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
-  client.once("ready", async () => {
+  client.once('ready', async () => {
     console.log('Discord.js client ready');
     // const channels: DiscordChannels = await getDiscordChannels(client);
     // const api: ApiPromise = await connectApi(wsLocation);
@@ -55,12 +54,12 @@ const discordBotToken = process.env.TOKEN || undefined; // environment variable 
     // });
   });
 
-  client.on("debug", console.log);
-  client.on("error", console.error);
-  client.on("apiResponse", console.log);
-  client.on("apiRequest", console.error);
+  client.on('debug', console.log);
+  client.on('error', console.error);
+  client.on('apiResponse', console.log);
+  client.on('apiRequest', console.error);
 
   client.login(discordBotToken).then(async () => {
-    console.log("Bot logged in successfully");
+    console.log('Bot logged in successfully');
   });
-})()
+})();

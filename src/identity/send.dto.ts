@@ -1,6 +1,6 @@
 import { Param } from '@discord-nestjs/core';
 
-export class ClaimDto {
+export class SendDto {
   @Param({ description: 'Your Joystream username', required: true })
   username!: string;
   @Param({

@@ -7,14 +7,13 @@ import { RetryablePioneerClient } from 'src/gql/pioneer.client';
 
 @Injectable()
 export abstract class BaseEventHandler {
-
   constructor(
     protected readonly queryNodeClient: RetryablePioneerClient,
     @InjectDiscordClient()
     protected readonly client: Client,
     @Optional()
-    protected channels: DiscordChannels) {
-  }
+    protected channels: DiscordChannels,
+  ) {}
 
   @Once('ready')
   async onReady(): Promise<void> {

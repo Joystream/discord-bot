@@ -8,7 +8,7 @@ import { AtlasGraphQLModule } from 'src/gql/atlas.module';
   imports: [
     DiscordModule.forFeature(),
     ConfigModule.forRoot(),
-    AtlasGraphQLModule
+    AtlasGraphQLModule,
   ],
   providers: [VideoCreatedHandler],
 })

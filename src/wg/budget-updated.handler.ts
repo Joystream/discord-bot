@@ -9,7 +9,7 @@ import { PalletCommonWorkingGroupIterableEnumsWorkingGroup } from '@polkadot/typ
 
 @Injectable()
 export class BudgetUpdatedHandler extends BaseEventHandler {
-    private readonly logger = new Logger(BudgetUpdatedHandler.name);
+  private readonly logger = new Logger(BudgetUpdatedHandler.name);
 
   @OnEvent('*.UpdatedWorkingGroupBudget')
   async handleBudgetUpdatedEvent(payload: EventWithBlock) {
@@ -18,7 +18,8 @@ export class BudgetUpdatedHandler extends BaseEventHandler {
       return;
     }
     const budgetChange = (data[1] as Balance).toNumber();
-    const wg: PalletCommonWorkingGroupIterableEnumsWorkingGroup = data[0] as PalletCommonWorkingGroupIterableEnumsWorkingGroup;
+    const wg: PalletCommonWorkingGroupIterableEnumsWorkingGroup =
+      data[0] as PalletCommonWorkingGroupIterableEnumsWorkingGroup;
     console.log(wg.toHuman());
     let dynamicChannels: TextChannel[] = [];
 
@@ -49,7 +50,8 @@ export class BudgetUpdatedHandler extends BaseEventHandler {
           embeds: [
             getBudgetSetEmbed(budgetChange, payload.block, payload.event),
           ],
-        }));
+        }),
+      );
     }
   }
 }

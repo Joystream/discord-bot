@@ -23,12 +23,8 @@ export class WorkerExitedHandler extends BaseEventHandler {
     const exitedMember = await this.queryNodeClient.workerById(exitedWorkerKey);
     this.channels[section].forEach((ch: TextChannel) =>
       ch.send({
-        embeds: [
-          getWorkerExitedEmbed(
-            exitedMember,
-            payload
-          ),
-        ],
-      }));
+        embeds: [getWorkerExitedEmbed(exitedMember, payload)],
+      }),
+    );
   }
 }

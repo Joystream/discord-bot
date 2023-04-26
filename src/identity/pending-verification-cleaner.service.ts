@@ -10,8 +10,8 @@ export class PendingVerificationCleaner {
 
   constructor(
     @Inject('PENDING_VERIFICATION_REPOSITORY')
-    private readonly pendingVerificationRepository: typeof PendingVerification
-  ) { }
+    private readonly pendingVerificationRepository: typeof PendingVerification,
+  ) {}
 
   @Cron(CronExpression.EVERY_30_MINUTES)
   async cleanupOldPendingVerifications(): Promise<void> {
@@ -19,9 +19,9 @@ export class PendingVerificationCleaner {
     const deletedRecords = await this.pendingVerificationRepository.destroy({
       where: {
         createdAt: {
-          [Op.lte]: moment().subtract(30, 'minutes')
-        }
-      }
+          [Op.lte]: moment().subtract(30, 'minutes'),
+        },
+      },
     });
     if (deletedRecords) {
       this.logger.debug(`${deletedRecords} records cleaned`);

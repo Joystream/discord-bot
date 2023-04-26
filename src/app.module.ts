@@ -21,20 +21,25 @@ import { JoyGovernanceModule } from './governance/governance.module';
     AtlasGraphQLModule,
     DiscordModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        token: configService.get('TOKEN'),
-        discordClientOptions: {
-          intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS],
-        },
-        registerCommandOptions: [
-          {
-            forGuild: configService.get('DISCORD_SERVER'),
-            allowFactory: (message: Message) =>
-              !message.author.bot && message.content === '!deploy',
-            removeCommandsBefore: true,
+      useFactory: (configService: ConfigService) =>
+        ({
+          token: configService.get('TOKEN'),
+          discordClientOptions: {
+            intents: [
+              Intents.FLAGS.GUILDS,
+              Intents.FLAGS.GUILD_MESSAGES,
+              Intents.FLAGS.GUILD_MEMBERS,
+            ],
           },
-        ],
-      } as DiscordModuleOption),
+          registerCommandOptions: [
+            {
+              forGuild: configService.get('DISCORD_SERVER'),
+              allowFactory: (message: Message) =>
+                !message.author.bot && message.content === '!deploy',
+              removeCommandsBefore: true,
+            },
+          ],
+        } as DiscordModuleOption),
       inject: [ConfigService],
     }),
     BlockchainModule,
@@ -45,6 +50,6 @@ import { JoyGovernanceModule } from './governance/governance.module';
     StorageProvidersModule,
     JoyGovernanceModule,
   ],
-  providers: [],
+  providers: [IdentityModule],
 })
 export class AppModule {}

@@ -8,19 +8,33 @@ import { getProposalDecidedEmbed } from './proposals-embeds';
 
 @Injectable()
 export class ProposalDecisionMadeHandler extends BaseEventHandler {
-
   @OnEvent('proposalsEngine.ProposalDecisionMade')
   async handleProposalDecisionMadeEvent(payload: EventWithBlock) {
-
     const [proposalId, decision] = [
-      this.getDataFromEvent([payload.event], 'proposalsEngine', 'ProposalDecisionMade', 0),
-      this.getDataFromEvent([payload.event], 'proposalsEngine', 'ProposalDecisionMade', 1)
+      this.getDataFromEvent(
+        [payload.event],
+        'proposalsEngine',
+        'ProposalDecisionMade',
+        0,
+      ),
+      this.getDataFromEvent(
+        [payload.event],
+        'proposalsEngine',
+        'ProposalDecisionMade',
+        1,
+      ),
     ];
 
-    const channelToUse = findDiscordChannel(this.client, channelNames[this.getProposalsChannelKey()])[0];
+    const channelToUse = findDiscordChannel(
+      this.client,
+      channelNames[this.getProposalsChannelKey()],
+    )[0];
     channelToUse.send({
       embeds: [
-        getProposalDecidedEmbed(proposalId, decision?.toString() || 'Status Unknown')
+        getProposalDecidedEmbed(
+          proposalId,
+          decision?.toString() || 'Status Unknown',
+        ),
       ],
     });
   }

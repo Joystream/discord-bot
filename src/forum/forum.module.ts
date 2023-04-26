@@ -7,9 +7,9 @@ import { PostCreatedHandler } from './post-created.handler';
 
 @Module({
   imports: [
-    DiscordModule.forFeature(), 
+    DiscordModule.forFeature(),
     ConfigModule.forRoot(),
-    PioneerGraphQLModule
+    PioneerGraphQLModule,
   ],
   providers: [ThreadCreatedHandler, PostCreatedHandler],
 })

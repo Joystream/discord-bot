@@ -17,7 +17,7 @@ import { ProposalVotedHandler } from './vote-cast.handler';
     DiscordModule.forFeature(),
     ConfigModule.forRoot(),
     PioneerGraphQLModule,
-    IdentityModule
+    IdentityModule,
   ],
   providers: [
     ProposalCreatedHandler,
@@ -26,6 +26,6 @@ import { ProposalVotedHandler } from './vote-cast.handler';
     ProposalPostCreatedHandler,
     ProposalPostDeletedHandler,
     ProposalPostUpdatedHandler,
-  ]
+  ],
 })
 export class JoyGovernanceModule {}

@@ -8,7 +8,6 @@ import { getLeaderSetEmbed, getLeaderUnsetEmbed } from './embeds';
 
 @Injectable()
 export class LeadHandler extends BaseEventHandler {
-
   @OnEvent('*.LeaderSet')
   async handleLeadSetEvent(payload: EventWithBlock) {
     const { section, data } = payload.event.event;
@@ -16,11 +15,14 @@ export class LeadHandler extends BaseEventHandler {
       return;
     }
     const leaderId = data[0] as WorkerId;
-    const leaderWorker = await this.queryNodeClient.workerById(`${section}-${leaderId.toString()}`);
+    const leaderWorker = await this.queryNodeClient.workerById(
+      `${section}-${leaderId.toString()}`,
+    );
     this.channels[section].forEach((ch: TextChannel) =>
       ch.send({
         embeds: [getLeaderSetEmbed(leaderWorker, payload.block, payload.event)],
-      }));
+      }),
+    );
   }
 
   @OnEvent('*.LeaderUnset')
@@ -31,7 +33,8 @@ export class LeadHandler extends BaseEventHandler {
     }
     this.channels[section].forEach((ch: TextChannel) =>
       ch.send({
-        embeds: [getLeaderUnsetEmbed(payload.block, payload.event)]
-      }));
+        embeds: [getLeaderUnsetEmbed(payload.block, payload.event)],
+      }),
+    );
   }
 }

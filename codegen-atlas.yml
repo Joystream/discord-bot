@@ -5,7 +5,7 @@ schema:
 
 documents:
   - >
-    query getVideoById($videoId: ID!) {
+    query getVideoById($videoId: String!) {
       videoByUniqueInput(where: {id: $videoId}) {
             ...VideoFields        
       }
@@ -19,7 +19,10 @@ documents:
         id
         createdAt
         reaction
-        memberId
+        member{
+          id
+          handle
+        }
         __typename
       }
       category {
@@ -27,7 +30,7 @@ documents:
         name
         __typename
       }
-      views
+      viewsNum
       duration
       createdAt
       isPublic
@@ -36,10 +39,7 @@ documents:
       isCensored
       isCommentSectionEnabled
       commentsCount
-      language {
-        iso
-        __typename
-      }
+      language 
       publishedBeforeJoystream
       mediaMetadata {
         ...VideoMediaMetadataFields
@@ -95,20 +95,20 @@ documents:
       id
       title
       createdAt
-      views
-      follows
+      videoViewsNum
+      followsNum
       avatarPhoto {
         ...StorageDataObjectFields
         __typename
       }
       ownerMember {
-        ...BasicMembershipFields
+        ...NftOwnerMember
         __typename
       }
       __typename
     }
 
-    fragment BasicMembershipFields on Membership {
+    fragment NftOwnerMember on Membership {
       id
       handle
       controllerAccount
@@ -147,57 +147,16 @@ documents:
       creatorRoyalty
       lastSaleDate
       lastSalePrice
-      ownerMember {
-        ...BasicMembershipFields
+      owner {
+        # ...NftOwnerMember
+        # ...BasicChannelFields
         __typename
       }
-      creatorChannel {
-        ...BasicChannelFields
-        __typename
-      }
-      transactionalStatusAuction {
-        id
-        auctionType {
-          __typename
-          ... on AuctionTypeEnglish {
-            duration
-            extensionPeriod
-            minimalBidStep
-            plannedEndAtBlock
-            __typename
-          }
-          ... on AuctionTypeOpen {
-            bidLockDuration
-            __typename
-          }
-        }
-        isCompleted
-        initialOwner {
-          ...BasicMembershipFields
-          __typename
-        }
-        buyNowPrice
-        startingPrice
-        startsAtBlock
-        endedAtBlock
-        topBid {
-          ...BasicBidFields
-          __typename
-        }
-        bids {
-          ...BasicBidFields
-          __typename
-        }
-        whitelistedMembers {
-          ...BasicMembershipFields
-          __typename
-        }
-        __typename
-      }
+
       transactionalStatus {
         __typename
         ... on TransactionalStatusIdle {
-          dummy
+          phantom
           __typename
         }
         ... on TransactionalStatusBuyNow {
@@ -214,7 +173,7 @@ documents:
 
     fragment BasicBidFields on Bid {
       bidder {
-        ...BasicMembershipFields
+        ...NftOwnerMember
         __typename
       }
       amount
@@ -228,7 +187,7 @@ documents:
     fragment BasicVideoFields on Video {
       id
       title
-      views
+      viewsNum
       createdAt
       duration
       title
@@ -256,8 +215,8 @@ documents:
       id
       createdAt
       creatorRoyalty
-      ownerMember {
-        ...BasicMembershipFields
+      owner {
+        # ...NftOwnerMember
         __typename
       }
       transactionalStatus {

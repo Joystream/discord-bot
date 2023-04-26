@@ -9,7 +9,6 @@ import { getStakeUpdatedEmbed } from './embeds';
 
 @Injectable()
 export class StakeHandler extends BaseEventHandler {
-  
   @OnEvent('*.StakeIncreased')
   async handleIncrease(payload: EventWithBlock) {
     await this.handle(payload);
@@ -31,7 +30,9 @@ export class StakeHandler extends BaseEventHandler {
       return;
     }
     const stakeWorkerId = data[0] as WorkerId;
-    const stakeWorker = await this.queryNodeClient.workerById(`${section}-${stakeWorkerId.toString()}`);
+    const stakeWorker = await this.queryNodeClient.workerById(
+      `${section}-${stakeWorkerId.toString()}`,
+    );
     const stake = data[1] as Balance;
 
     this.channels[section].forEach((ch: TextChannel) =>
@@ -42,9 +43,10 @@ export class StakeHandler extends BaseEventHandler {
             stakeWorker,
             method.replace('Stake', ''),
             payload.block,
-            payload.event
+            payload.event,
           ),
         ],
-      }));
+      }),
+    );
   }
 }

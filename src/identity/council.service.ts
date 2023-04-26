@@ -6,10 +6,7 @@ import { RetryablePioneerClient } from 'src/gql/pioneer.client';
  */
 @Injectable()
 export class CouncilService {
-
-  constructor(
-    private readonly queryNodeClient: RetryablePioneerClient,
-  ) { }
+  constructor(private readonly queryNodeClient: RetryablePioneerClient) {}
 
   async fetchCurrentCouncilMembers() {
     return await this.queryNodeClient.activeCouncilMembers();

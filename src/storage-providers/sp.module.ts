@@ -8,11 +8,11 @@ import { StorageProviderHealthChecker } from './sp-health-checker.service';
 
 @Module({
   imports: [
-    CacheModule.register({ttl: 60*60}), // cached for 1h
+    CacheModule.register({ ttl: 60 * 60 }), // cached for 1h
     DiscordModule.forFeature(),
     ConfigModule.forRoot(),
     DatabaseModule,
-    PioneerGraphQLModule
+    PioneerGraphQLModule,
   ],
   providers: [StorageNodeEndpointProvider, StorageProviderHealthChecker],
 })

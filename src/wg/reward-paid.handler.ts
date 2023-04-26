@@ -10,7 +10,6 @@ import { PalletWorkingGroupRewardPaymentType } from '@polkadot/types/lookup';
 
 @Injectable()
 export class RewardPaidHandler extends BaseEventHandler {
-
   @OnEvent('*.RewardPaid')
   async handleRewardPaidEvent(payload: EventWithBlock) {
     const { section, data } = payload.event.event;
@@ -18,9 +17,12 @@ export class RewardPaidHandler extends BaseEventHandler {
       return;
     }
     const paidWorkerId = data[0] as WorkerId;
-    const paidWorkerAffected = await this.queryNodeClient.workerById(`${section}-${paidWorkerId.toString()}`);
+    const paidWorkerAffected = await this.queryNodeClient.workerById(
+      `${section}-${paidWorkerId.toString()}`,
+    );
     const paidReward = data[2] as Balance;
-    const isRewardMissed = (data[3] as PalletWorkingGroupRewardPaymentType).isMissedReward;
+    const isRewardMissed = (data[3] as PalletWorkingGroupRewardPaymentType)
+      .isMissedReward;
     this.channels[section].forEach((ch: TextChannel) =>
       ch.send({
         embeds: [
@@ -29,9 +31,10 @@ export class RewardPaidHandler extends BaseEventHandler {
             paidWorkerAffected,
             isRewardMissed,
             payload.block,
-            payload.event
+            payload.event,
           ),
         ],
-      }));
+      }),
+    );
   }
 }

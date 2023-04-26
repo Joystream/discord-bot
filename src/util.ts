@@ -11,23 +11,31 @@ export async function connectApi(url: string): Promise<ApiPromise> {
   return await ApiPromise.create({ provider });
 }
 
-export function getBlockHash(api: ApiPromise,  block: BlockNumber | number): Promise<Hash> {
+export function getBlockHash(
+  api: ApiPromise,
+  block: BlockNumber | number,
+): Promise<Hash> {
   try {
     return api.rpc.chain.getBlockHash(block);
   } catch (e) {
     return getBestHash(api);
   }
-};
+}
 
 export function getBestHash(api: ApiPromise) {
   return api.rpc.chain.getFinalizedHead();
 }
 
-export function getEvents(api: ApiPromise, hash: Hash): Promise<Vec<EventRecord>> {
+export function getEvents(
+  api: ApiPromise,
+  hash: Hash,
+): Promise<Vec<EventRecord>> {
   return api.query.system.events.at(hash);
-} 
+}
 
-export async function getDiscordChannels (client: Client): Promise<DiscordChannels> {
+export async function getDiscordChannels(
+  client: Client,
+): Promise<DiscordChannels> {
   const discordChannels: DiscordChannels = {};
   Object.keys(channelNames).map(async (c) => {
     const channel = findDiscordChannel(client, channelNames[c]);
@@ -37,25 +45,27 @@ export async function getDiscordChannels (client: Client): Promise<DiscordChanne
     }
   });
   return discordChannels;
-};
+}
 
-export function findDiscordChannel(client: Client,  name: string): TextChannel[] {
-  return client.channels.cache.filter(
-    (channel: any) => channel.name === name
-  ).map((value: AnyChannel) => value as TextChannel);
+export function findDiscordChannel(
+  client: Client,
+  name: string,
+): TextChannel[] {
+  return client.channels.cache
+    .filter((channel: any) => channel.name === name)
+    .map((value: AnyChannel) => value as TextChannel);
 }
 
 export async function findServerRole(
   client: Client,
   serverName: string,
-  roleName: string
+  roleName: string,
 ): Promise<Role | undefined> {
-  
   const server = await client.guilds.fetch(serverName);
-  const role = server.roles.cache.find(role => role.name === roleName);
+  const role = server.roles.cache.find((role) => role.name === roleName);
   return role;
 }
-  
+
 export function delay(milliseconds: number) {
-  return new Promise( resolve => setTimeout(resolve, milliseconds) );
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }

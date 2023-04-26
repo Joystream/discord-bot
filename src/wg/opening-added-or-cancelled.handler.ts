@@ -29,7 +29,9 @@ export class OpeningAddedOrCancelledHandler extends BaseEventHandler {
     const openingIdKey = `${section}-${openingId.toString()}`;
     this.logger.debug(openingIdKey);
 
-    const qnOpeningObject = await this.queryNodeClient.openingById(openingIdKey)
+    const qnOpeningObject = await this.queryNodeClient.openingById(
+      openingIdKey,
+    );
     if (!qnOpeningObject || !qnOpeningObject.workingGroupOpeningByUniqueInput) {
       this.logger.log('Opening not found in QN');
     } else {
@@ -41,10 +43,11 @@ export class OpeningAddedOrCancelledHandler extends BaseEventHandler {
                 openingId,
                 qnOpeningObject,
                 payload.block,
-                payload.event
+                payload.event,
               ),
             ],
-          }));
+          }),
+        );
       } else {
         this.channels[section].forEach((ch: TextChannel) =>
           ch.send({
@@ -53,10 +56,11 @@ export class OpeningAddedOrCancelledHandler extends BaseEventHandler {
                 openingId,
                 qnOpeningObject,
                 payload.block,
-                payload.event
+                payload.event,
               ),
             ],
-          }));
+          }),
+        );
       }
     }
   }

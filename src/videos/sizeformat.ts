@@ -1,13 +1,13 @@
 /**
-* Format bytes as human-readable text.
-* 
-* @param bytes Number of bytes.
-* @param si True to use metric (SI) units, aka powers of 1000. False to use 
-*           binary (IEC), aka powers of 1024.
-* @param dp Number of decimal places to display.
-* 
-* @return Formatted string.
-*/
+ * Format bytes as human-readable text.
+ *
+ * @param bytes Number of bytes.
+ * @param si True to use metric (SI) units, aka powers of 1000. False to use
+ *           binary (IEC), aka powers of 1024.
+ * @param dp Number of decimal places to display.
+ *
+ * @return Formatted string.
+ */
 export function humanFileSize(bytes: number, si = false, dp = 1): string {
   const threshold = si ? 1000 : 1024;
 
@@ -24,9 +24,10 @@ export function humanFileSize(bytes: number, si = false, dp = 1): string {
   do {
     bytes /= threshold;
     ++u;
-  } while (Math.round(Math.abs(bytes) * r) / r >= threshold && u < units.length - 1);
-
+  } while (
+    Math.round(Math.abs(bytes) * r) / r >= threshold &&
+    u < units.length - 1
+  );
 
   return bytes.toFixed(dp) + ' ' + units[u];
-
 }

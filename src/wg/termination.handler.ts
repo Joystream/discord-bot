@@ -8,7 +8,6 @@ import { getWorkerTerminatedEmbed } from './embeds';
 
 @Injectable()
 export class TerminationHandler extends BaseEventHandler {
-
   @OnEvent('*.TerminatedWorker')
   async handleWorkerTerminationEvent(payload: EventWithBlock) {
     this.handle(payload);
@@ -26,15 +25,13 @@ export class TerminationHandler extends BaseEventHandler {
     }
     const terminatedId = data[0] as WorkerId;
     const terminatedWorkerKey = `${section}-${terminatedId.toString()}`;
-    const terminatedIdWorker = await this.queryNodeClient.workerById(terminatedWorkerKey);
+    const terminatedIdWorker = await this.queryNodeClient.workerById(
+      terminatedWorkerKey,
+    );
     this.channels[section].forEach((ch: TextChannel) =>
       ch.send({
-        embeds: [
-          getWorkerTerminatedEmbed(
-            terminatedIdWorker,
-            payload
-          ),
-        ],
-      }));
+        embeds: [getWorkerTerminatedEmbed(terminatedIdWorker, payload)],
+      }),
+    );
   }
 }
