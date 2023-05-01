@@ -1,0 +1,187 @@
+# Run codegen using: npm run generate
+# Make sure schema endpoint is accessible!
+schema:
+  - https://query.joystream.org/graphql # Pioneer
+
+documents:
+  - >
+    query openingById($openingId: ID!) {
+      workingGroupOpeningByUniqueInput(where: {id: $openingId}) {
+        metadata {
+          applicationDetails
+          description
+          hiringLimit
+          expectedEnding
+          shortDescription
+          title
+        }
+        id
+        rewardPerBlock
+        stakeAmount
+        unstakingPeriod
+      }
+    }
+
+  - >
+    query workerById($workerId: ID!) {
+      workerByUniqueInput(where: {id: $workerId}) {
+        membership {
+          ...MemberFields
+        }
+        status {
+          __typename
+        }
+        rewardPerBlock
+        stake
+        rewardAccount
+        roleAccount
+        stakeAccount
+      }
+    }
+
+    fragment ForumCategoryFields on ForumCategory {
+      id
+      parentId
+      title
+    }
+
+    fragment MemberFields on Membership {
+      handle
+      id    
+      controllerAccount
+      rootAccount
+      isVerified
+      isFoundingMember
+      isCouncilMember
+      roles {
+        id
+        groupId
+        status {
+          ... on WorkerStatusActive {
+            __typename
+          }
+          ... on WorkerStatusLeaving {
+            __typename
+          }
+          ... on WorkerStatusLeft {
+            __typename
+          }
+          ... on WorkerStatusTerminated {
+            __typename
+          }
+        }
+        isLead
+      }
+    }
+
+  - >
+    query applicationById($applicationId: ID!) {
+      workingGroupApplicationByUniqueInput(where: {id: $applicationId}) {
+        applicant {
+          handle
+        }
+        openingId
+      }
+    }
+
+  - >
+    query memberById($memberId: ID!) {
+      memberships(where: {id_eq: $memberId}) {
+        ...MemberFields
+      }
+    }
+
+  - >
+    query memberByHandle($handle: String) {
+      memberships(where: {handle_eq: $handle}) {
+        ...MemberFields
+      }
+    }
+
+  - >
+    query membersByHandles($handles: [String!]) {
+      memberships(where: {handle_in: $handles}) {
+        ...MemberFields
+      }
+    }
+
+  - >
+    query workersByAccount($account: String!) {
+      workers(where: {rewardAccount_eq: $account}) {
+        id
+        membership {
+          ...MemberFields
+        }
+      }
+    }
+
+  - >
+    query activeCouncilMembers {
+      electedCouncils(where: {endedAtBlock_eq: null}) {
+        councilMembers {
+          member {
+            ...MemberFields
+          }
+        }
+      }
+    }
+
+  - >
+    query forumThreadById($threadId: ID!) {
+      forumThreadByUniqueInput(where: {id: $threadId}) {
+        id
+        title
+        author {
+          ...MemberFields
+        }
+        category {
+          ...ForumCategoryFields
+        }
+      }
+    }
+
+  - >
+    query postById($postId: ID!) {
+      forumPostByUniqueInput(where: {id: $postId}) {
+        id
+        author {
+          ...MemberFields
+        }
+        thread {
+          id
+          title
+          author {
+            ...MemberFields
+          }
+          category {
+            ...ForumCategoryFields
+          }
+        }
+      }
+    }
+  - >
+    query getStorageNodes {
+      storageBuckets(where: {dataObjectsCount_gt: 0}) {
+        operatorMetadata {
+          nodeEndpoint
+        }
+      }
+    }
+  - >
+    query getStorageBagsByNodeEndpoint($nodeEndpoint: String!) {
+      storageBuckets(where: {operatorMetadata: {nodeEndpoint_eq: $nodeEndpoint}}) {
+        bags {
+          storageBuckets {
+            id
+          }
+          id
+        }
+      }
+    }
+
+generates:
+  ./src/qntypes.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-graphql-request
