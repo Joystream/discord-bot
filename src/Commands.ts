@@ -1,8 +1,16 @@
 import { Command } from "./Command";
-import { Deposit } from "./commands/Deposit";
+import { Deposit1 } from "./commands/Deposit1";
 import { Trasnfer } from "./commands/Transfer";
 import { Withdraw } from "./commands/Withdraw";
-import { SetWallet } from "./commands/SetWallet";
+import { Deposit2 } from "./commands/Deposit2";
 import { GetAmount } from "./commands/GetAmount";
+import { Help } from "./commands/Help";
 
-export const Commands: Command[] = [Deposit, Trasnfer, Withdraw, SetWallet, GetAmount];
+export const Commands: Command[] = [
+  Deposit1,
+  Trasnfer,
+  Withdraw,
+  Deposit2,
+  GetAmount,
+  Help,
+];
