@@ -1,0 +1,37 @@
+query ($first: Int!, $after: String, $filter: ExtrinsicWhereInput, $order: [ExtrinsicOrderByInput!]!) {
+			extrinsicsConnection(first: $first, after: $after, where: $filter, orderBy: $order) {
+				edges {
+					node {
+						id
+						hash
+						call {
+							name
+							args
+						}
+						block {
+							id
+							hash
+							height
+							timestamp
+							spec {
+								specVersion
+							}
+						}
+						signature
+						indexInBlock
+						success
+						tip
+						fee
+						error
+						version
+					}
+				}
+				pageInfo {
+					endCursor
+					hasNextPage
+					hasPreviousPage
+					startCursor
+				}
+				${fetchTotalCount ? "totalCount" : ""}
+			}
+}
