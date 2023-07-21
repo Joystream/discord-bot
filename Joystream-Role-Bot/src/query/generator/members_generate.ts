@@ -32,8 +32,11 @@ export interface MemberFieldFragment {
 }
 
 export interface RoleMember {
+  status: {
+    __typename: string;
+  };
   groupId?: string;
-  inLead?: boolean;
+  isLead?: boolean;
 }
 
 export interface Member {
@@ -52,18 +55,7 @@ export const asMember = (member: MemberFieldFragment): Member => {
     isFoundingMember: member.isFoundingMember,
     isCouncilMember: member.isCouncilMember,
     rootAccount: member.rootAccount,
-    roles: member.roles.map((role) => {
-      if (role.status.__typename === "WorkerStatusActive")
-        return {
-          groupId: role.groupId,
-          inLead: role.isLead,
-        };
-
-      return {
-        groupId: undefined,
-        inLead: undefined,
-      };
-    }),
+    roles: member.roles,
   };
 };
 

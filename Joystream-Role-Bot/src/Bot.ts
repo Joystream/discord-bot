@@ -12,8 +12,6 @@ const token = process.env.SERVER_TOKEN; // add your token here
 
 console.log("Bot is starting...");
 
-// setInterval(setMemberDB, Number(process.env.RECONNECT_TIME) * 60000);
-
 (async () => {
   if (!validateEnv()) return;
 
@@ -25,4 +23,5 @@ console.log("Bot is starting...");
   client.login(token);
   ready(client);
   interactionCreate(client);
+  setInterval(setMemberDB, Number(process.env.RECONNECT_TIME) * 60000, client);
 })();

@@ -7,13 +7,16 @@ export interface RoleBotData {
   isFoundingMember: boolean;
   isCouncilMember: boolean;
   isCreator: boolean;
-  rootAddress: string;
+  rootAccount: string;
   roles: RoleMember[];
 }
 
 interface RoleSchema {
-  groupId: String;
+  groupId: {
+    __typename: String;
+  };
   isLead: Boolean;
+  status: String;
 }
 export const RoleBot = new Schema({
   id: String,
@@ -21,7 +24,7 @@ export const RoleBot = new Schema({
   isFoundingMember: Boolean,
   isCouncilMember: Boolean,
   isCreator: Boolean,
-  rootAddress: String,
+  rootAccount: String,
   roles: Array<RoleSchema>,
 });
 
