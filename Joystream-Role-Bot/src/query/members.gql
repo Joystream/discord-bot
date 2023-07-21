@@ -1,0 +1,30 @@
+fragment MemberFields on Membership {
+  handle
+  isFoundingMember
+  isCouncilMember
+  rootAccount
+  roles {
+    status {
+      ... on WorkerStatusActive {
+        __typename
+      }
+      ... on WorkerStatusLeaving {
+        __typename
+      }
+      ... on WorkerStatusLeft {
+        __typename
+      }
+      ... on WorkerStatusTerminated {
+        __typename
+      }
+    }
+    groupId
+    isLead
+  }
+}
+
+query getMembers {
+  memberships(limit: 50000) {
+    ...MemberFields
+  }
+}
