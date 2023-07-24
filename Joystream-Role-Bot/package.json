@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "generate": "graphql-codegen && graphql-codegen --config codegen.yml",
-    "start": "ts-node  src/Bot.ts",
-    "dev": "nodemon src/Bot.ts",
+    "start": "ts-node  src/RoleBot.ts",
+    "dev": "nodemon src/RoleBot.ts",
     "build": "tsc"
   },
   "author": "",

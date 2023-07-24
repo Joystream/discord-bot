@@ -1,8 +1,8 @@
 import { CommandInteraction, Client } from "discord.js";
 import { Command } from "../Command";
 
-export const Help: Command = {
-  name: "help",
+export const ListRoleMembers: Command = {
+  name: "list_role_members",
   description: "Help page for the Joystream discord role bot",
 
   run: async (client: Client, interaction: CommandInteraction) => {

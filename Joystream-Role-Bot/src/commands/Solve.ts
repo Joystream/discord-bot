@@ -14,11 +14,11 @@ import { ClaimVerify, transferChallenge } from "../utils/signAndVerify";
 export const Solve: Command = {
   name: "solve",
   description:
-    "confirm you are the owner of the deposit by running this command after deposit-1",
+    "confirm you are the owner of the claimed membership by providing the signature",
   options: [
     {
       name: "signature",
-      description: "signature of the deposit account",
+      description: "signature of the membership root account",
       type: ApplicationCommandOptionType.String,
       required: true,
     },
@@ -49,7 +49,7 @@ export const Solve: Command = {
         if (confirm) {
           const verify = await setChallengeVerify(user.id);
           if (verify) {
-            content = "Successfully verify !";
+            content = `Success! Your discord roles will be updated after ${process.env.SYNCH_TIME} minutes.`;
           } else {
             content = "Database input error!";
           }

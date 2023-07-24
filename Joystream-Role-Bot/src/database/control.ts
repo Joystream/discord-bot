@@ -282,11 +282,6 @@ const addRole = async (
   const role = await guild.roles.fetch(roleId);
   if (role) {
     state ? await member.roles.add(role) : await member.roles.remove(role);
-    console.log(
-      `The role ${role.name} has been ${state ? "added" : "delete"} to ${
-        member.user.tag
-      }`
-    );
   } else {
     console.log(`${roleName} Role not found`);
   }
@@ -306,14 +301,9 @@ export const setUserIdChallenge = async (
       verifyState: false,
     });
   } else {
-    if (UserId.discordHandle === userName && UserId.rootAccount === wallet) {
-      return true;
-    }
-    if (UserId) {
-      UserId.challenge = challenge;
-      UserId.rootAccount = wallet;
-      UserId.verifyState = false;
-    }
+    UserId.challenge = challenge;
+    UserId.rootAccount = wallet;
+    UserId.verifyState = false;
   }
   UserId?.save();
   return false;

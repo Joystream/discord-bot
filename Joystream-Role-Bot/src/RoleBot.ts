@@ -23,5 +23,5 @@ console.log("Bot is starting...");
   client.login(token);
   ready(client);
   interactionCreate(client);
-  setInterval(setMemberDB, Number(process.env.RECONNECT_TIME) * 60000, client);
+  setInterval(setMemberDB, Number(process.env.SYNCH_TIME) * 60000, client);
 })();

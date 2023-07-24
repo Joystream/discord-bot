@@ -1,9 +1,9 @@
 import { CommandInteraction, Client, Permissions } from "discord.js";
 import { Command } from "../Command";
 
-export const Role: Command = {
-  name: "role",
-  description: "role",
+export const Status: Command = {
+  name: "status",
+  description: "status",
 
   run: async (client: Client, interaction: CommandInteraction) => {
     const { user, options, guild } = interaction;
