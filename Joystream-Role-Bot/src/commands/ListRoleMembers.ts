@@ -30,16 +30,10 @@ export const ListRoleMembers: Command = {
     const members = await getMembersOfRole(roleId);
 
     if (members && members.length !== 0) {
-      const users = await Promise.all(
-        members.map(async (id) => {
-          const user = await client.users.fetch(id);
-          return user.username;
-        })
-      );
+      const mention = members.map((d) => `<@${d}>`);
+      const username = mention.join(", ");
 
-      const username = users.join(", ");
-
-      content = discordRole + " : " + username;
+      content = `${discordRole}  :  ${username}`;
     } else {
       content =
         discordRole + " : " + "There is not already register and verify.";

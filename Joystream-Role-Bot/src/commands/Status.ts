@@ -10,11 +10,16 @@ export const Status: Command = {
   run: async (client: Client, interaction: CommandInteraction) => {
     const block = blockCalculation();
     const emptyRole = await getEmptyRole();
-    const roles = emptyRole.join(", ");
+
+    const mention = emptyRole.map((d) => `<@&${d}>`);
+    const roles = mention.join(", ");
     let content: string = `
-    Empty Roles: ${roles}\nVersion : ${
-      process.env.VERSION
-    } \nBlock : ${block.toFixed(0)}`;
+
+    Empty Roles: ${roles}
+
+    Version : ${process.env.VERSION}
+    
+    Block : ${block.toFixed(0)}`;
 
     await interaction.followUp({
       content,

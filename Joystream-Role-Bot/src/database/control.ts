@@ -737,7 +737,7 @@ export const getEmptyRole = async () => {
           if (buf) state = true;
         }
 
-        if (!state) result.push("Founding Member");
+        if (!state) result.push(RoleAddress.foundingMember);
         break;
       case RoleAddress.creator:
         const createMembers = await MemberModel.find({
@@ -747,7 +747,7 @@ export const getEmptyRole = async () => {
           const buf = await getEmptyUsers(member);
           if (buf) state = true;
         }
-        if (!state) result.push("Creator");
+        if (!state) result.push(RoleAddress.creator);
         break;
       case RoleAddress.councilMember:
         const councilMembers = await MemberModel.find({
@@ -757,7 +757,7 @@ export const getEmptyRole = async () => {
           const buf = await getEmptyUsers(member);
           if (buf) state = true;
         }
-        if (!state) result.push("Council Member");
+        if (!state) result.push(RoleAddress.councilMember);
         break;
 
       case RoleAddress.operationsWorkingGroupAlpha:
@@ -775,7 +775,7 @@ export const getEmptyRole = async () => {
           const buf = await getEmptyUsers(member);
           if (buf) state = true;
         }
-        if (!state) result.push("Builder Worker");
+        if (!state) result.push(RoleAddress.operationsWorkingGroupAlpha);
 
         break;
       case RoleAddress.operationsWorkingGroupAlphaLead:
@@ -793,7 +793,7 @@ export const getEmptyRole = async () => {
           const buf = await getEmptyUsers(member);
           if (buf) state = true;
         }
-        if (!state) result.push("Builder Lead");
+        if (!state) result.push(RoleAddress.operationsWorkingGroupAlphaLead);
 
         break;
       case RoleAddress.operationsWorkingGroupBeta:
@@ -811,7 +811,7 @@ export const getEmptyRole = async () => {
           const buf = await getEmptyUsers(member);
           if (buf) state = true;
         }
-        if (!state) result.push("HR Worker");
+        if (!state) result.push(RoleAddress.operationsWorkingGroupBeta);
 
         break;
       case RoleAddress.operationsWorkingGroupBetaLead:
@@ -829,7 +829,7 @@ export const getEmptyRole = async () => {
           const buf = await getEmptyUsers(member);
           if (buf) state = true;
         }
-        if (!state) result.push("HR Lead");
+        if (!state) result.push(RoleAddress.operationsWorkingGroupBetaLead);
 
         break;
       case RoleAddress.appWorkingGroup:
@@ -847,7 +847,7 @@ export const getEmptyRole = async () => {
           const buf = await getEmptyUsers(member);
           if (buf) state = true;
         }
-        if (!state) result.push("App Worker");
+        if (!state) result.push(RoleAddress.appWorkingGroup);
 
         break;
       case RoleAddress.appWorkingGroupLead:
@@ -865,7 +865,7 @@ export const getEmptyRole = async () => {
           const buf = await getEmptyUsers(member);
           if (buf) state = true;
         }
-        if (!state) result.push("App Lead");
+        if (!state) result.push(RoleAddress.appWorkingGroupLead);
 
         break;
       case RoleAddress.contentWorkingGroup:
@@ -883,7 +883,7 @@ export const getEmptyRole = async () => {
           const buf = await getEmptyUsers(member);
           if (buf) state = true;
         }
-        if (!state) result.push("Content Worker");
+        if (!state) result.push(RoleAddress.contentWorkingGroup);
 
         break;
       case RoleAddress.contentWorkingGroupLead:
@@ -901,7 +901,7 @@ export const getEmptyRole = async () => {
           const buf = await getEmptyUsers(member);
           if (buf) state = true;
         }
-        if (!state) result.push("Content Lead");
+        if (!state) result.push(RoleAddress.contentWorkingGroupLead);
 
         break;
       case RoleAddress.distributionWorkingGroup:
@@ -919,7 +919,7 @@ export const getEmptyRole = async () => {
           const buf = await getEmptyUsers(member);
           if (buf) state = true;
         }
-        if (!state) result.push("Distribution Worker");
+        if (!state) result.push(RoleAddress.distributionWorkingGroup);
 
         break;
       case RoleAddress.distributionWorkingGroupLead:
@@ -937,7 +937,7 @@ export const getEmptyRole = async () => {
           const buf = await getEmptyUsers(member);
           if (buf) state = true;
         }
-        if (!state) result.push("Distribution Lead");
+        if (!state) result.push(RoleAddress.distributionWorkingGroupLead);
 
         break;
       case RoleAddress.forumWorkingGroup:
@@ -955,7 +955,7 @@ export const getEmptyRole = async () => {
           const buf = await getEmptyUsers(member);
           if (buf) state = true;
         }
-        if (!state) result.push("Forum Worker");
+        if (!state) result.push(RoleAddress.forumWorkingGroup);
 
         break;
       case RoleAddress.forumWorkingGroupLead:
@@ -973,7 +973,7 @@ export const getEmptyRole = async () => {
           const buf = await getEmptyUsers(member);
           if (buf) state = true;
         }
-        if (!state) result.push("Forum Lead");
+        if (!state) result.push(RoleAddress.forumWorkingGroupLead);
 
         break;
       case RoleAddress.membershipWorkingGroup:
@@ -991,7 +991,7 @@ export const getEmptyRole = async () => {
           const buf = await getEmptyUsers(member);
           if (buf) state = true;
         }
-        if (!state) result.push("Membership Worker");
+        if (!state) result.push(RoleAddress.membershipWorkingGroup);
 
         break;
       case RoleAddress.membershipWorkingGroupLead:
@@ -1009,7 +1009,7 @@ export const getEmptyRole = async () => {
           const buf = await getEmptyUsers(member);
           if (buf) state = true;
         }
-        if (!state) result.push("Membership Lead");
+        if (!state) result.push(RoleAddress.membershipWorkingGroupLead);
 
         break;
       case RoleAddress.operationsWorkingGroupGamma:
@@ -1027,7 +1027,7 @@ export const getEmptyRole = async () => {
           const buf = await getEmptyUsers(member);
           if (buf) state = true;
         }
-        if (!state) result.push("Marketing Worker");
+        if (!state) result.push(RoleAddress.operationsWorkingGroupGamma);
 
         break;
       case RoleAddress.operationsWorkingGroupGammaLead:
@@ -1045,7 +1045,7 @@ export const getEmptyRole = async () => {
           const buf = await getEmptyUsers(member);
           if (buf) state = true;
         }
-        if (!state) result.push("Marketing Lead");
+        if (!state) result.push(RoleAddress.operationsWorkingGroupGammaLead);
 
         break;
 

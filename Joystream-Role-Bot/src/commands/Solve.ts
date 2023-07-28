@@ -36,7 +36,7 @@ export const Solve: Command = {
     if (!claimm) {
       content = "You must run claim first";
     } else {
-      const { challenge, name, wallet } = claimm as Challenge;
+      const { challenge, wallet } = claimm as Challenge;
 
       if (challenge && wallet) {
         const verify: ClaimVerify = {
