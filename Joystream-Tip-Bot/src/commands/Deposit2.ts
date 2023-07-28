@@ -30,7 +30,7 @@ export const Deposit2: Command = {
     const { user, options } = interaction;
 
     const decChallenge: string = String(options.get("signature")?.value);
-    let content: string = "";
+    let content: string = "verify deposit 2";
 
     const claimm = await getChallengeData(user.id);
 
@@ -49,7 +49,7 @@ export const Deposit2: Command = {
 
         if (confirm) {
           const dbdata = await getJoyData(user.id);
-          const date = new Date(dbdata.day);
+          const date = new Date(Number(dbdata.day));
           const filter = {
             call: {
               name_eq: "Balances.transfer",

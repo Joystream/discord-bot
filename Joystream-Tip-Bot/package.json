@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node  src/Bot.ts",
-    "dev": "nodemon src/Bot.ts",
+    "start": "ts-node  src/TipBot.ts",
+    "dev": "nodemon src/TipBot.ts",
     "build": "tsc"
   },
   "author": "",
@@ -23,6 +23,7 @@
     "dotenv": "^16.0.3",
     "fs": "^0.0.1-security",
     "graphql-request": "^6.1.0",
+    "moment": "^2.29.4",
     "mongoose": "^7.0.5",
     "path": "^0.12.7",
     "web3": "^1.9.0"

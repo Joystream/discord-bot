@@ -5,6 +5,7 @@ import {
 } from "discord.js";
 import { Command } from "../Command";
 import { getHistoryData } from "../database/control";
+import moment from "moment";
 
 export const History: Command = {
   name: "history",
@@ -27,10 +28,17 @@ export const History: Command = {
 
     const history = await getHistoryData(userId);
     let content: string = "history";
-    console.log(history);
 
     if (history || history) {
-      content = "String(history)";
+      const historyString = history.map((item) => {
+        const { _id, sendAddress, receiveAddress, amount, dateAndTime } = item;
+        const date = moment(dateAndTime);
+        return `<@${sendAddress}> to <@${receiveAddress}> send ${amount}JOY on ${date.format(
+          "YYYY-MM-DD hh:mm:ss"
+        )}`;
+      });
+      const formattedData = historyString.join("\n");
+      content = formattedData;
     } else {
       content = "There is no history for this user";
     }

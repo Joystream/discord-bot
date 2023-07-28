@@ -8,7 +8,7 @@ export const getJoyData = async (username: string) => {
       userName: username,
       walletAddress: 0,
       amount: 0,
-      day: Date.now() - 600,
+      day: Date.now() - 3600000,
       collageAmount: 0,
     }));
 
@@ -47,7 +47,7 @@ export const setJoyData = async (
       userName: userName,
       walletAddress: 0,
       amount: 0,
-      day: 1684120215,
+      day: Date.now() - 3600000,
       collageAmount: 0,
       challenge: challenge,
       challengeAddress: address,
@@ -103,7 +103,7 @@ export const sendJoyToken = async (
 
   recieveJoy.save();
 
-  return `You have sent ${reiceve} ${amount} JOY`;
+  return `You have sent <@${reiceve}> ${amount} JOY`;
 };
 
 export const withdrawJoy = async (userName: string, amount: number) => {
