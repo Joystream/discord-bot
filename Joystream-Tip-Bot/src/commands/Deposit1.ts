@@ -60,6 +60,7 @@ export const Deposit1: Command = {
       };
 
       const extrinsics = await useGetTransfers(filter, wallet);
+
       if (extrinsics.length !== 0) {
         const amount = extrinsics.reduce(
           (a: number, b) => (a += Number(b.value)),

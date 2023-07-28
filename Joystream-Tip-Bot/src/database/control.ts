@@ -1,4 +1,5 @@
 import JoyModel from "./models";
+import HistoryModel from "./historyModel";
 
 export const getJoyData = async (username: string) => {
   const JoyData =
@@ -7,7 +8,7 @@ export const getJoyData = async (username: string) => {
       userName: username,
       walletAddress: 0,
       amount: 0,
-      day: 1684120215,
+      day: Date.now() - 600,
       collageAmount: 0,
     }));
 
@@ -82,6 +83,13 @@ export const sendJoyToken = async (
   const sendJoy = await JoyModel.findOne({ userName: userName });
   if (!sendJoy) return;
 
+  await HistoryModel.create({
+    sendAddress: userName,
+    receiveAddress: reiceve,
+    amount: amount,
+    dateAndTime: Date.now(),
+  });
+
   sendJoy.amount = amount;
   sendJoy.collageAmount -= amount;
 
@@ -131,4 +139,16 @@ export const getChallengeData = async (
   };
 
   return val;
+};
+
+export const getHistoryData = async (id: string) => {
+  const historyData = await HistoryModel.find({
+    $or: [{ sendAddress: id }, { receiveAddress: id }],
+  });
+
+  if (!historyData || historyData.length === 0) {
+    return false;
+  }
+
+  return historyData;
 };

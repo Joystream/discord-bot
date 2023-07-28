@@ -46,7 +46,7 @@ export const Deposit2: Command = {
           wallet: wallet,
         };
         const confirm = await transferChallenge(verify);
-        console.log(verify);
+
         if (confirm) {
           const dbdata = await getJoyData(user.id);
           const date = new Date(dbdata.day);

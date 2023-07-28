@@ -37,7 +37,8 @@ export const Trasnfer: Command = {
       content = "Amount value exceeds deposit!";
     else {
       const recieve = String(options.get("receiver")?.value);
-      const sendValue = await sendJoyToken(user.id, recieve, amount);
+      const userId = recieve.replace(/[<@!>]/g, "");
+      const sendValue = await sendJoyToken(user.id, userId, amount);
       content = `${sendValue}`;
     }
     await interaction.followUp({

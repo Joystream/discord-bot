@@ -20,4 +20,4 @@ export const Joybot = new Schema({
   challengeAddress: String,
 });
 
-export default model<JoyBotData>("joybot", Joybot);
+export default model<JoyBotData>("tipbotusers", Joybot);
