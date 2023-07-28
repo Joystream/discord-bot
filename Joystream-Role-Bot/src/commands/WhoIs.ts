@@ -2,11 +2,9 @@ import {
   CommandInteraction,
   Client,
   ApplicationCommandOptionType,
-  Role,
-  Guild,
-  GuildMember,
 } from "discord.js";
 import { Command } from "../Command";
+import { getUserIdtoRoles } from "../database/control";
 
 export const WhoIs: Command = {
   name: "who_is",
@@ -15,42 +13,38 @@ export const WhoIs: Command = {
     {
       name: "discord_handle",
       description:
-        "The discord Usename of which you wish to display information",
+        "The discord Username of which you wish to display information",
       type: ApplicationCommandOptionType.String,
       required: true,
     },
   ],
   run: async (client: Client, interaction: CommandInteraction) => {
-    const content = `who is`;
-    const { user, options } = interaction;
+    let content: string = `who is`;
+    const { options } = interaction;
 
     const discordHandle: string = String(options.get("discord_handle")?.value);
     const userId = discordHandle.replace(/[<@!>]/g, "");
 
-    const guild = client.guilds.cache.get(String(process.env.SERVER_ID));
+    content =
+      options.get("discord_handle")?.value +
+      " : " +
+      (await getUserIdtoRoles(userId));
 
-    if (guild) {
-      try {
-        // Fetch the member by their account ID
-        const member: GuildMember | null = await guild.members.fetch(userId);
+    // if (member) {
+    //   const roles = member.roles;
+    //   console.log(roles);
+    // }
+    // const guild = client.guilds.cache.get(String(process.env.SERVER_ID));
 
-        if (member) {
-          const roles: Role[] = Array.from(member.roles.cache.values());
-          console.log(roles);
-          // Get the roles of the member
-          // Loop through the roles and log their names
-        } else {
-          console.log("Member not found");
-        }
-      } catch (error) {
-        console.error("Error fetching member:", error);
-      }
-    } else {
-      console.log("Guild not found");
-    }
-
-    const roles = interaction.member?.roles;
-
+    // if (guild)
+    //   guild.members
+    //     .fetch(userId)
+    //     .then((member) => {
+    //       // member.roles.cache is a collection of roles the member has
+    //       console.log(member.roles);
+    //       content = String(member.roles);
+    //     })
+    //     .catch(console.error);
     await interaction.followUp({
       ephemeral: true,
       content,

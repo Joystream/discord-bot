@@ -1,5 +1,6 @@
 fragment MemberFields on Membership {
   handle
+  createdAt
   isFoundingMember
   isCouncilMember
   rootAccount

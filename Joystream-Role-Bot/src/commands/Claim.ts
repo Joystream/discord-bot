@@ -5,6 +5,7 @@ import {
 } from "discord.js";
 import { Command } from "../Command";
 import { setUserIdChallenge } from "../database/control";
+import { encodeAddress } from "../hook/formatAddress";
 
 function generateKeyFromSeed() {
   const characters =
@@ -35,13 +36,15 @@ export const Claim: Command = {
   run: async (client: Client, interaction: CommandInteraction) => {
     const { options, user } = interaction;
 
-    let content: string = "";
+    let content: string = "claim";
 
     const wallet = String(options.get("root_account")?.value);
 
+    const joystreamAddress = encodeAddress(wallet, 126);
+
     const key = generateKeyFromSeed();
 
-    await setUserIdChallenge(user.id, wallet, key);
+    await setUserIdChallenge(user.id, joystreamAddress, key);
 
     content = `Go to this URL https://polkadot.js.org/apps/?rpc=wss://rpc.joystream.org:9944#/signing and sign the following data with the given account. ${key}`;
 

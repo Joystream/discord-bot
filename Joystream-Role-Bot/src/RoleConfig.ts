@@ -61,3 +61,86 @@ export const RoleAddress = {
   operationsWorkingGroupGamma: "1131937635166863441",
   operationsWorkingGroupGammaLead: "1131937441658445894",
 };
+
+export const roleDBStatus = [
+  {
+    roleId: RoleAddress.appWorkingGroup,
+    dbName: "appWorkingGroup",
+    isLead: false,
+  },
+  {
+    roleId: RoleAddress.appWorkingGroupLead,
+    dbName: "appWorkingGroup",
+    isLead: true,
+  },
+  {
+    roleId: RoleAddress.contentWorkingGroup,
+    dbName: "contentWorkingGroup",
+    isLead: false,
+  },
+  {
+    roleId: RoleAddress.contentWorkingGroupLead,
+    dbName: "contentWorkingGroup",
+    isLead: true,
+  },
+  {
+    roleId: RoleAddress.distributionWorkingGroup,
+    dbName: "distributionWorkingGroup",
+    isLead: false,
+  },
+  {
+    roleId: RoleAddress.distributionWorkingGroupLead,
+    dbName: "distributionWorkingGroup",
+    isLead: true,
+  },
+  {
+    roleId: RoleAddress.forumWorkingGroup,
+    dbName: "forumWorkingGroup",
+    isLead: false,
+  },
+  {
+    roleId: RoleAddress.forumWorkingGroupLead,
+    dbName: "forumWorkingGroup",
+    isLead: true,
+  },
+  {
+    roleId: RoleAddress.membershipWorkingGroup,
+    dbName: "membershipWorkingGroup",
+    isLead: false,
+  },
+  {
+    roleId: RoleAddress.membershipWorkingGroup,
+    dbName: "membershipWorkingGroup",
+    isLead: true,
+  },
+  {
+    roleId: RoleAddress.operationsWorkingGroupAlpha,
+    dbName: "operationsWorkingGroupAlpha",
+    isLead: false,
+  },
+  {
+    roleId: RoleAddress.operationsWorkingGroupAlpha,
+    dbName: "operationsWorkingGroupAlpha",
+    isLead: true,
+  },
+  {
+    roleId: RoleAddress.operationsWorkingGroupBeta,
+    dbName: "operationsWorkingGroupBeta",
+    isLead: false,
+  },
+  {
+    roleId: RoleAddress.operationsWorkingGroupBetaLead,
+    dbName: "operationsWorkingGroupBeta",
+    isLead: true,
+  },
+  {
+    roleId: RoleAddress.operationsWorkingGroupGamma,
+    dbName: "operationsWorkingGroupGamma",
+    isLead: false,
+  },
+  {
+    roleId: RoleAddress.operationsWorkingGroupGamma,
+    dbName: "operationsWorkingGroupGamma",
+    isLead: true,
+  },
+];

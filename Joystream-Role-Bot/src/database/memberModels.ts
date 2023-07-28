@@ -4,6 +4,7 @@ import { RoleMember } from "src/query/generator/members_generate";
 export interface RoleBotData {
   id: string;
   handle: string;
+  createAt: Date;
   isFoundingMember: boolean;
   isCouncilMember: boolean;
   isCreator: boolean;
@@ -21,6 +22,7 @@ interface RoleSchema {
 export const RoleBot = new Schema({
   id: String,
   handle: String,
+  createAt: Date,
   isFoundingMember: Boolean,
   isCouncilMember: Boolean,
   isCreator: Boolean,

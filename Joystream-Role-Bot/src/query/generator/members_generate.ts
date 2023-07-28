@@ -4,6 +4,7 @@ import { GraphQLClient } from "graphql-request";
 export interface MemberFieldFragment {
   id: string;
   handle: string;
+  createAt: Date;
   isFoundingMember: boolean;
   isCouncilMember: boolean;
   rootAccount: string;
@@ -69,6 +70,7 @@ export async function getMembers() {
         memberships(limit: 50000) {
           id
           handle
+          createdAt
           isFoundingMember
           isCouncilMember
           rootAccount
