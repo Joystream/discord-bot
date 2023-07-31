@@ -25,10 +25,17 @@ export const WhoIs: Command = {
     const discordHandle: string = String(options.get("discord_handle")?.value);
     const userId = discordHandle.replace(/[<@!>]/g, "");
 
-    content =
-      options.get("discord_handle")?.value +
-      " : " +
-      (await getUserIdtoRoles(userId));
+    const roles = await getUserIdtoRoles(userId);
+
+    if (roles && roles.length !== 0) {
+      const mention = roles.map((d) => `<@&${d}>`);
+      const rolename = mention.join(", ");
+
+      content = `${discordHandle}  :  ${rolename}`;
+    } else {
+      content =
+        discordHandle + " : " + "There is not already register and verify.";
+    }
 
     // if (member) {
     //   const roles = member.roles;

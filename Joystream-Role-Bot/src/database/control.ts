@@ -284,51 +284,64 @@ const changeDBdataToRoles = (
   switch (groupId) {
     case "contentWorkingGroup":
       if (status)
-        isLead ? (buf = "Content Lead, ") : (buf = "Content Worker, ");
-
+        isLead
+          ? (buf = RoleAddress.contentWorkingGroupLead)
+          : (buf = RoleAddress.contentWorkingGroup);
       break;
     case "forumWorkingGroup":
-      if (status) isLead ? (buf = "Forum Lead, ") : (buf = "Forum Worker, ");
+      if (status)
+        isLead
+          ? (buf = RoleAddress.forumWorkingGroupLead)
+          : (buf = RoleAddress.forumWorkingGroup);
 
       break;
     case "appWorkingGroup":
-      if (status) isLead ? (buf = "App Lead, ") : (buf = "App Worker, ");
+      if (status)
+        isLead
+          ? (buf = RoleAddress.appWorkingGroupLead)
+          : (buf = RoleAddress.appWorkingGroup);
 
       break;
     case "membershipWorkingGroup":
       if (status)
-        isLead ? (buf = "Membership Lead,  ") : (buf = "Membership Worker, ");
+        isLead
+          ? (buf = RoleAddress.membershipWorkingGroupLead)
+          : (buf = RoleAddress.membershipWorkingGroup);
 
       break;
     case "distributionWorkingGroup":
       if (status)
         isLead
-          ? (buf = "Distribution Lead, ")
-          : (buf = "Distribution Worker, ");
+          ? (buf = RoleAddress.distributionWorkingGroupLead)
+          : (buf = RoleAddress.distributionWorkingGroup);
 
       break;
     case "storageWorkingGroup":
       if (status)
-        isLead ? (buf = "Storage Lead, ") : (buf = "Storage Worker, ");
+        isLead
+          ? (buf = RoleAddress.storageWorkingGroupLead)
+          : (buf = RoleAddress.storageWorkingGroup);
 
       break;
     case "operationsWorkingGroupAlpha":
       if (status)
-        isLead ? (buf = "Builder Lead, ") : (buf = "Builder Worker, ");
+        isLead
+          ? (buf = RoleAddress.operationsWorkingGroupAlphaLead)
+          : (buf = RoleAddress.operationsWorkingGroupAlpha);
 
       break;
     case "operationsWorkingGroupBeta":
-      if (status) isLead ? (buf = "HR Lead, ") : (buf = "HR Worker, ");
+      if (status)
+        isLead
+          ? (buf = RoleAddress.operationsWorkingGroupBetaLead)
+          : (buf = RoleAddress.operationsWorkingGroupBeta);
       break;
     case "operationsWorkingGroupGamma":
       if (status)
-        isLead ? (buf = "Marketing Lead, ") : (buf = "Marketing Worker, ");
+        isLead
+          ? (buf = RoleAddress.operationsWorkingGroupGammaLead)
+          : (buf = RoleAddress.operationsWorkingGroupGamma);
       break;
-    case "contentWorkingGroup":
-      if (status)
-        isLead ? (buf = "Content Lead, ") : (buf = "Content Worker, ");
-      break;
-
     default:
       break;
   }
@@ -338,22 +351,22 @@ const changeDBdataToRoles = (
 export const getUserIdtoRoles = async (id: string) => {
   const DiscordId = await IdModel.findOne({ discordHandle: id });
 
+  let result: string[] = [];
   if (DiscordId) {
     if (DiscordId.verifyState) {
-      let result: string = "";
       const encodeAccount = encodeAddress(DiscordId.rootAccount, 126);
       await MemberModel.findOne({
         rootAccount: encodeAccount,
       })
         .then((d) => {
           if (d?.isCouncilMember) {
-            result += `Councile Member, `;
+            result.push(RoleAddress.foundingMember);
           }
           if (d?.isCreator) {
-            result += `Creator, `;
+            result.push(RoleAddress.creator);
           }
           if (d?.isFoundingMember) {
-            result += "Founding Member, ";
+            result.push(RoleAddress.foundingMember);
           }
 
           d?.roles.map((rol: any) => {
@@ -361,7 +374,7 @@ export const getUserIdtoRoles = async (id: string) => {
               const status: boolean =
                 rol.status.__typename === "WorkerStatusActive" ? true : false;
 
-              result += changeDBdataToRoles(rol.groupId, rol.isLead, status);
+              result.push(changeDBdataToRoles(rol.groupId, rol.isLead, status));
             }
           });
         })
@@ -369,10 +382,10 @@ export const getUserIdtoRoles = async (id: string) => {
 
       return result;
     } else {
-      return "The member is not verified.";
+      return result;
     }
   } else {
-    return "Not found members";
+    return result;
   }
 };
 
