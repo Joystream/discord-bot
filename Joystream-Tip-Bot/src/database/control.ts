@@ -76,13 +76,15 @@ export const sendJoyToken = async (
 ) => {
   let error: string;
 
-  const tx = await JoyModel.findOne({ userName: userName });
-  if (!tx) return (error = "Error : sender's username is unregistered");
-
-  const rx = await JoyModel.findOne({ userName: reiceve });
-  if (!rx) return (error = "Error : receiver's username is unregistered");
-
-  const sendJoy = await JoyModel.findOne({ userName: userName });
+  const sendJoy =
+    (await JoyModel.findOne({ userName: userName })) ||
+    (await JoyModel.create({
+      userName: userName,
+      walletAddress: 0,
+      amount: 0,
+      day: Date.now() - 3600000,
+      collageAmount: 0,
+    }));
   if (!sendJoy) return;
 
   await HistoryModel.create({
@@ -97,7 +99,15 @@ export const sendJoyToken = async (
 
   sendJoy.save();
 
-  const recieveJoy = await JoyModel.findOne({ userName: reiceve });
+  const recieveJoy =
+    (await JoyModel.findOne({ userName: reiceve })) ||
+    (await JoyModel.create({
+      userName: reiceve,
+      walletAddress: 0,
+      amount: 0,
+      day: Date.now() - 3600000,
+      collageAmount: 0,
+    }));
   if (!recieveJoy) return;
 
   recieveJoy.amount = amount;
