@@ -6,6 +6,7 @@ import { Deposit2 } from "./commands/Deposit2";
 import { GetAmount } from "./commands/GetAmount";
 import { Help } from "./commands/Help";
 import { History } from "./commands/History";
+import { Status } from "./commands/Status";
 
 export const Commands: Command[] = [
   Deposit1,
@@ -15,4 +16,5 @@ export const Commands: Command[] = [
   GetAmount,
   Help,
   History,
+  Status,
 ];

@@ -1,3 +1,5 @@
+import { ApiPromise, WsProvider } from "@polkadot/api";
+import BN from "bn.js";
 import JoyModel from "./models";
 import HistoryModel from "./historyModel";
 
@@ -151,4 +153,34 @@ export const getHistoryData = async (id: string) => {
   }
 
   return historyData;
+};
+
+export const getTotalPoolData = async () => {
+  let totalValue: number | string = "test";
+  const provider = new WsProvider(process.env.RPC_URL);
+  const api = await ApiPromise.create({ provider });
+  if (process.env.SERVER_WALLET_ADDRESS) {
+    const balances = await api?.derive.balances.all(
+      process.env.SERVER_WALLET_ADDRESS
+    );
+
+    const { freeBalance, reservedBalance } = balances;
+    const total = freeBalance.toBn().add(reservedBalance);
+    totalValue = formatJoyValue(total);
+  } else {
+    totalValue = "undefined pool address of server";
+  }
+
+  return totalValue;
+};
+
+export const formatJoyValue = (value: BN) => {
+  if (value.isZero()) {
+    return "0";
+  }
+
+  const bigNumber = new BN(value, 2);
+  const decimalNumber = parseInt(bigNumber.toString(10));
+
+  return (decimalNumber / 10000000000).toFixed(2);
 };

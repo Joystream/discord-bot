@@ -25,7 +25,7 @@ export const GetAmount: Command = {
 
     const amount = await getJoyData(userId);
 
-    const content = `${discordHandle} balance is ${amount.collageAmount}`;
+    const content = `${discordHandle} balance is ${amount.collageAmount}JOY`;
 
     await interaction.followUp({
       ephemeral: true,
