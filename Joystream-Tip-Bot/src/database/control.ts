@@ -34,7 +34,7 @@ export const updateJoyData = async (
 
   joyData.save();
 
-  return `Your deposit is ${amount} JOY`;
+  return `Your wallet has been verified. Your deposit is ${amount} JOY`;
 };
 
 export const setJoyData = async (

@@ -74,10 +74,16 @@ export const Deposit2: Command = {
 
             content = updateData;
           } else {
-            content = "There is no deposit from the given address";
+            const updateData = await updateJoyData(
+              user.id,
+              0,
+              wallet
+            );
+
+            content = updateData;
           }
         } else {
-          content = "Your signature is incorrect";
+          content = "Your signature is incorrect. Please restart with the /verifyDeposit1 command.";
         }
       }
     }

@@ -108,11 +108,12 @@ export const useGetTransfers = async (
   wallet: string
 ) => {
   const extrinsics = await getExtrinsics(filter);
-
   if (Array.isArray(extrinsics)) {
     const data = extrinsics.map(asExtrinsic);
     const decAddress = decodeAddress(wallet);
-    const filter = data.filter((d) => d.account === decAddress);
+    const filter = data.filter((d) => {
+      return d.account === decAddress
+    });
     const decBaseAddress = decodeAddress(
       process.env.SERVER_WALLET_ADDRESS ?? ""
     );

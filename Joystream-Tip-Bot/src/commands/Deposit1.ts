@@ -6,6 +6,7 @@ import {
 import { Command } from "../Command";
 import { getJoyData, setJoyData, updateJoyData } from "../database/control";
 import { useGetTransfers } from "../query/generator/extrinsics";
+import { decodeAddress, encodeAddress } from "../hook/formatAddress";
 
 function generateKeyFromSeed() {
   const characters =
@@ -39,17 +40,16 @@ export const Deposit1: Command = {
     let content: string = "";
 
     const wallet = String(options.get("wallet")?.value);
+    const encodeWallet = wallet.charAt(0) === "5" ? wallet : decodeAddress(wallet);
 
     const key = generateKeyFromSeed();
 
-    const claimState = await setJoyData(user.id, wallet, key);
+    const claimState = await setJoyData(user.id, encodeWallet, key);
     if (claimState) {
       content =
         "Your discord UID is already coupled with the given address. No need to run verifyDeposit-2";
       const dbdata = await getJoyData(user.id);
-
       const date = new Date(dbdata.day);
-
       const filter = {
         call: {
           name_eq: "Balances.transfer",
@@ -59,7 +59,7 @@ export const Deposit1: Command = {
         },
       };
 
-      const extrinsics = await useGetTransfers(filter, wallet);
+      const extrinsics = await useGetTransfers(filter, encodeWallet);
 
       if (extrinsics.length !== 0) {
         const amount = extrinsics.reduce(
@@ -69,11 +69,11 @@ export const Deposit1: Command = {
         const updateData = await updateJoyData(
           user.id,
           amount / 10000000000,
-          wallet
+          encodeWallet
         );
         content = updateData;
       } else {
-        content = "There is no deposit from the given address";
+        content = "Your wallet has already been verified.";
       }
     } else {
       content = `Go to this URL https://polkadot.js.org/apps/?rpc=wss://rpc.joystream.org:9944#/signing and sign the following data with the given account. ${key}`;
