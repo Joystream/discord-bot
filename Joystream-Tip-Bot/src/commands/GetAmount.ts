@@ -26,7 +26,7 @@ export const GetAmount: Command = {
 
     const amount = await getJoyData(userId);
 
-    const content = `${discordHandle} balance is ${amount.collageAmount}JOY \nThe wallet address bound to your discord account is ${encodeAddress(amount.walletAddress, 126)} `;
+    const content = `${discordHandle} balance is ${amount.collageAmount}JOY \nThe wallet address bound to this discord account is ${encodeAddress(amount.walletAddress, 126)} `;
 
     await interaction.followUp({
       ephemeral: true,
