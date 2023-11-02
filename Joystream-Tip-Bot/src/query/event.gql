@@ -1,0 +1,21 @@
+query ($filter: EventWhereInput) {
+  events(limit: 1, offset: 0, where: $filter, orderBy: id_DESC) {
+    id
+    name
+    block {
+      id
+      height
+      timestamp
+      spec {
+        specVersion
+      }
+    }
+    extrinsic {
+      id
+    }
+    call {
+      id
+    }
+    args
+  }
+}
