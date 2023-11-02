@@ -6,7 +6,7 @@ export const Help: Command = {
   description: "Help page for the tipping bot",
 
   run: async (client: Client, interaction: CommandInteraction) => {
-    const content = `Please follow this link to learn how to use the tipping bot. https://www.notion.so/joystream/JOY-tipping-bot-cc69c748e3994234842d03434facc82c?pvs=4
+    const content = `Please follow this link to learn how to use the tipping bot.https://joystream.notion.site/Joystream-Tipping-Bot-cc69c748e3994234842d03434facc82c
     `;
 
     await interaction.followUp({
