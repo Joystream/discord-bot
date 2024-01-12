@@ -67,7 +67,7 @@ export const setMemberRole = async (client: Client): Promise<void> => {
     return;
   }
 
-  await api?.rpc.chain.subscribeNewHeads((header) => {
+  await api?.rpc.chain.subscribeNewHeads((header: any) => {
     upDateBlockNumber(header.number.toString());
   });
 
@@ -80,7 +80,7 @@ export const setMemberRole = async (client: Client): Promise<void> => {
 
   await guild.members.fetch();
   const discordMembers = guild.members.cache.filter(
-    (member) => !member.user.bot,
+    (member: any) => !member.user.bot,
   );
 
   const qnMembers = Qndata.flatMap((qnMember) => {
@@ -109,7 +109,7 @@ export const setMemberRole = async (client: Client): Promise<void> => {
     }
 
     const discordMember = discordMembers.find(
-      (member) => member.user.username === memberDiscordHandle,
+      (member: any) => member.user.username === memberDiscordHandle,
     );
 
     if (!discordMember) {
@@ -132,14 +132,28 @@ export const setMemberRole = async (client: Client): Promise<void> => {
     //   console.error("Error removing member roles:", error);
     // }
 
-    await discordMember.roles.add(RoleAddress.membershipLinked);
+    const linkRole = await guild.roles.fetch(RoleAddress.membershipLinked);
+
+    if (!linkRole) {
+      console.log(`<@&${RoleAddress.membershipLinked}> Role not found`);
+      return
+    }
+
+    const getRoles = discordMember.roles.cache.map((role: any) => role.id)
+
+    if (!getRoles.find((id: string) => id === RoleAddress.membershipLinked)) {
+      await discordMember.roles.add(linkRole);
+    }
 
     const roleUpdatePromises = qnMember.roles.map(async (memberRole) => {
+
       const memberRoleGroupId = memberRole.groupId;
+
       const mappedRoles = roleMap[memberRoleGroupId];
       if (!mappedRoles) return;
 
       const [leadRoleId, workerRoleId] = mappedRoles;
+
       const roleId = memberRole.isLead ? leadRoleId : workerRoleId;
       const role = await guild.roles.fetch(roleId);
 
@@ -147,17 +161,24 @@ export const setMemberRole = async (client: Client): Promise<void> => {
         console.log(`<@&${roleId}> Role not found`);
         return;
       }
+      if ((memberRole.status.__typename === "WorkerStatusActive") && !getRoles.find((id: string) => id === roleId)) await discordMember.roles.add(role);
+      if (!(memberRole.status.__typename === "WorkerStatusActive") && getRoles.find((id: string) => id === roleId)) await discordMember.roles.remove(role);
 
-      const roleUpdatePromise =
-        memberRole.status.__typename === "WorkerStatusActive"
-          ? discordMember.roles.add(role)
-          : discordMember.roles.remove(role);
-      await roleUpdatePromise;
+      const daoRole = await guild.roles.fetch(RoleAddress.DAO);
+
+      if (!daoRole) {
+        console.log(`<@&${daoRole}> Role not found`);
+        return;
+      }
+
+      if ((memberRole.status.__typename === "WorkerStatusActive" || qnMember.isCouncilMember) && !getRoles.find((id: string) => id === RoleAddress.DAO)) await discordMember.roles.add(daoRole)
+      if (!(memberRole.status.__typename === "WorkerStatusActive" || qnMember.isCouncilMember) && getRoles.find((id: string) => id === RoleAddress.DAO)) await discordMember.roles.remove(daoRole)
+
     });
 
     await Promise.all(roleUpdatePromises);
 
-    // /// concile, founding, creator part  ///
+    /// concile, founding, creator part  ///
     const specialRoles = [
       // {
       //   roleId: RoleAddress.foundingMember,
@@ -181,11 +202,11 @@ export const setMemberRole = async (client: Client): Promise<void> => {
         return;
       }
 
-      const roleUpdatePromise = specialRole.isActive
-        ? discordMember.roles.add(role)
-        : discordMember.roles.remove(role);
-      await roleUpdatePromise;
+      if (specialRole.isActive && !getRoles.find((id: string) => id === specialRole.roleId)) await discordMember.roles.add(role);
+      if (!specialRole.isActive && getRoles.find((id: string) => id === specialRole.roleId)) await discordMember.roles.remove(role);
+
     });
+
     await Promise.all(specialRolesPromises);
   });
 
