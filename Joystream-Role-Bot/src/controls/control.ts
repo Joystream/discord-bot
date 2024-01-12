@@ -67,7 +67,7 @@ export const setMemberRole = async (client: Client): Promise<void> => {
     return;
   }
 
-  await api?.rpc.chain.subscribeNewHeads((header) => {
+  await api?.rpc.chain.subscribeNewHeads((header: any) => {
     upDateBlockNumber(header.number.toString());
   });
 
@@ -79,8 +79,9 @@ export const setMemberRole = async (client: Client): Promise<void> => {
   }
 
   await guild.members.fetch();
+
   const discordMembers = guild.members.cache.filter(
-    (member) => !member.user.bot,
+    (member: any) => !member.user.bot,
   );
 
   const qnMembers = Qndata.flatMap((qnMember) => {
@@ -109,7 +110,7 @@ export const setMemberRole = async (client: Client): Promise<void> => {
     }
 
     const discordMember = discordMembers.find(
-      (member) => member.user.username === memberDiscordHandle,
+      (member: any) => member.user.username === memberDiscordHandle,
     );
 
     if (!discordMember) {
@@ -135,12 +136,16 @@ export const setMemberRole = async (client: Client): Promise<void> => {
     await discordMember.roles.add(RoleAddress.membershipLinked);
 
     const roleUpdatePromises = qnMember.roles.map(async (memberRole) => {
+
       const memberRoleGroupId = memberRole.groupId;
+
       const mappedRoles = roleMap[memberRoleGroupId];
       if (!mappedRoles) return;
 
       const [leadRoleId, workerRoleId] = mappedRoles;
+
       const roleId = memberRole.isLead ? leadRoleId : workerRoleId;
+
       const role = await guild.roles.fetch(roleId);
 
       if (!role) {
@@ -150,13 +155,24 @@ export const setMemberRole = async (client: Client): Promise<void> => {
 
       const roleUpdatePromise =
         memberRole.status.__typename === "WorkerStatusActive"
-          ? discordMember.roles.add(role)
-          : discordMember.roles.remove(role);
+          ? await discordMember.roles.add(role)
+          : await discordMember.roles.remove(role);
+
       await roleUpdatePromise;
+
+      const daoRole = await guild.roles.fetch(RoleAddress.DAO);
+
+      if (!daoRole) {
+        console.log(`<@&${daoRole}> Role not found`);
+        return;
+      }
+
+      const daoRoleUpdatePromise = (memberRole.isLead || memberRole.status.__typename === "WorkerStatusActive" || qnMember.isCouncilMember) ? await discordMember.roles.add(daoRole) : await discordMember.roles.remove(daoRole);
+
+      await daoRoleUpdatePromise;
     });
 
     await Promise.all(roleUpdatePromises);
-
     // /// concile, founding, creator part  ///
     const specialRoles = [
       // {
@@ -182,8 +198,8 @@ export const setMemberRole = async (client: Client): Promise<void> => {
       }
 
       const roleUpdatePromise = specialRole.isActive
-        ? discordMember.roles.add(role)
-        : discordMember.roles.remove(role);
+        ? await discordMember.roles.add(role)
+        : await discordMember.roles.remove(role);
       await roleUpdatePromise;
     });
     await Promise.all(specialRolesPromises);
