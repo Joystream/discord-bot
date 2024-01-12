@@ -167,9 +167,8 @@ export const setMemberRole = async (client: Client): Promise<void> => {
         return;
       }
 
-      const daoRoleUpdatePromise = (memberRole.isLead || memberRole.status.__typename === "WorkerStatusActive" || qnMember.isCouncilMember) ? await discordMember.roles.add(daoRole) : await discordMember.roles.remove(daoRole);
+      (memberRole.isLead || memberRole.status.__typename === "WorkerStatusActive" || qnMember.isCouncilMember) ? await discordMember.roles.add(daoRole) : await discordMember.roles.remove(daoRole);
 
-      await daoRoleUpdatePromise;
     });
 
     await Promise.all(roleUpdatePromises);
