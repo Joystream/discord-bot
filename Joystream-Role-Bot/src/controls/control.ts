@@ -14,6 +14,12 @@ type RoleMap = {
   [key: string]: [string, string];
 };
 
+type GetWorkingState = {
+  lead: boolean,
+  workingGroups: string,
+  active: boolean,
+}
+
 const roleMap: RoleMap = {
   contentWorkingGroup: [
     RoleAddress.contentWorkingGroupLead,
@@ -98,9 +104,9 @@ export const setMemberRole = async (client: Client): Promise<void> => {
 
   if (qnMembers.length === 0) return;
 
-  const membersPromises = qnMembers.map(async (qnMember) => {
+  const membersPromises = qnMembers.map(async (qnMember: any) => {
     const memberDiscordHandle = qnMember.externalResources.find(
-      (data) => data.type === "DISCORD",
+      (data: any) => data.type === "DISCORD",
     )?.value;
 
     if (!memberDiscordHandle) {
@@ -145,36 +151,57 @@ export const setMemberRole = async (client: Client): Promise<void> => {
       await discordMember.roles.add(linkRole);
     }
 
-    const roleUpdatePromises = qnMember.roles.map(async (memberRole) => {
+    let nowWorking: GetWorkingState[] = [];
 
-      const memberRoleGroupId = memberRole.groupId;
+    const roleUpdatePromises = qnMember.roles.map(async (memberRole: any) => {
 
-      const mappedRoles = roleMap[memberRoleGroupId];
-      if (!mappedRoles) return;
+      const index = nowWorking.findIndex(data => data.workingGroups === memberRole.groupId)
 
-      const [leadRoleId, workerRoleId] = mappedRoles;
+      const active = memberRole.status.__typename === "WorkerStatusActive";
+      const lead = memberRole.isLead;
+      const workingGroups = memberRole.groupId;
 
-      const roleId = memberRole.isLead ? leadRoleId : workerRoleId;
-      const role = await guild.roles.fetch(roleId);
-
-      if (!role) {
-        console.log(`<@&${roleId}> Role not found`);
-        return;
+      if (index !== -1) {
+        nowWorking[index].active = active;
+        nowWorking[index].lead = lead;
+        nowWorking[index].workingGroups = workingGroups;
+      } else {
+        nowWorking.push({ active, lead, workingGroups });
       }
-      if ((memberRole.status.__typename === "WorkerStatusActive") && !getRoles.find((id: string) => id === roleId)) await discordMember.roles.add(role);
-      if (!(memberRole.status.__typename === "WorkerStatusActive") && getRoles.find((id: string) => id === roleId)) await discordMember.roles.remove(role);
-
-      const daoRole = await guild.roles.fetch(RoleAddress.DAO);
-
-      if (!daoRole) {
-        console.log(`<@&${daoRole}> Role not found`);
-        return;
-      }
-
-      if ((memberRole.status.__typename === "WorkerStatusActive" || qnMember.isCouncilMember) && !getRoles.find((id: string) => id === RoleAddress.DAO)) await discordMember.roles.add(daoRole)
-      if (!(memberRole.status.__typename === "WorkerStatusActive" || qnMember.isCouncilMember) && getRoles.find((id: string) => id === RoleAddress.DAO)) await discordMember.roles.remove(daoRole)
-
     });
+
+    let worker = false;
+    if (nowWorking.length !== 0) {
+      nowWorking.map(async (work) => {
+        const mappedRoles = roleMap[work.workingGroups];
+        if (!mappedRoles) return;
+
+        const [leadRoleId, workerRoleId] = mappedRoles;
+
+        const roleId = work.lead ? leadRoleId : workerRoleId;
+
+        const role = await guild.roles.fetch(roleId);
+
+        if (!role) {
+          console.log(`<@&${roleId}> Role not found`);
+          return;
+        }
+        if (work.active && !getRoles.find((id: string) => id === roleId)) await discordMember.roles.add(role);
+        if (!work.active && getRoles.find((id: string) => id === roleId)) await discordMember.roles.remove(role);
+        if (work.active) worker = true;
+      })
+
+    }
+
+    const daoRole = await guild.roles.fetch(RoleAddress.DAO);
+
+    if (!daoRole) {
+      console.log(`<@&${daoRole}> Role not found`);
+      return;
+    }
+
+    if ((worker || qnMember.isCouncilMember) && !getRoles.find((id: string) => id === RoleAddress.DAO)) await discordMember.roles.add(daoRole)
+    if (!(worker || qnMember.isCouncilMember) && getRoles.find((id: string) => id === RoleAddress.DAO)) await discordMember.roles.remove(daoRole)
 
     await Promise.all(roleUpdatePromises);
 
