@@ -85,6 +85,7 @@ export const setMemberRole = async (client: Client): Promise<void> => {
   }
 
   await guild.members.fetch();
+
   const discordMembers = guild.members.cache.filter(
     (member: any) => !member.user.bot,
   );
@@ -103,6 +104,21 @@ export const setMemberRole = async (client: Client): Promise<void> => {
   qn_recive_data = qnMembers;
 
   if (qnMembers.length === 0) return;
+
+  const daoRole = await guild.roles.fetch(RoleAddress.DAO);
+
+  if (!daoRole) {
+    console.log(`<@&${daoRole}> Role not found`);
+    return;
+  }
+
+  const linkRole = await guild.roles.fetch(RoleAddress.membershipLinked);
+
+  if (!linkRole) {
+    console.log(`<@&${RoleAddress.membershipLinked}> Role not found`);
+    return
+  }
+
 
   const membersPromises = qnMembers.map(async (qnMember: any) => {
     const memberDiscordHandle = qnMember.externalResources.find(
@@ -138,12 +154,6 @@ export const setMemberRole = async (client: Client): Promise<void> => {
     //   console.error("Error removing member roles:", error);
     // }
 
-    const linkRole = await guild.roles.fetch(RoleAddress.membershipLinked);
-
-    if (!linkRole) {
-      console.log(`<@&${RoleAddress.membershipLinked}> Role not found`);
-      return
-    }
 
     const getRoles = discordMember.roles.cache.map((role: any) => role.id)
 
@@ -195,12 +205,7 @@ export const setMemberRole = async (client: Client): Promise<void> => {
 
     await Promise.all(roleUpdatePromises);
 
-    const daoRole = await guild.roles.fetch(RoleAddress.DAO);
 
-    if (!daoRole) {
-      console.log(`<@&${daoRole}> Role not found`);
-      return;
-    }
 
     if ((worker || qnMember.isCouncilMember) && !getRoles.find((id: string) => id === RoleAddress.DAO)) discordMember.roles.add(daoRole)
     if (!(worker || qnMember.isCouncilMember) && getRoles.find((id: string) => id === RoleAddress.DAO)) discordMember.roles.remove(daoRole)
@@ -224,6 +229,7 @@ export const setMemberRole = async (client: Client): Promise<void> => {
     ];
 
     const specialRolesPromises = specialRoles.map(async (specialRole) => {
+
       const role = await guild.roles.fetch(specialRole.roleId);
 
       if (!role) {
