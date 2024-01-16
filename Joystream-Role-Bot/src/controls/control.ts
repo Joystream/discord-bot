@@ -186,12 +186,14 @@ export const setMemberRole = async (client: Client): Promise<void> => {
           console.log(`<@&${roleId}> Role not found`);
           return;
         }
-        if (work.active && !getRoles.find((id: string) => id === roleId)) await discordMember.roles.add(role);
-        if (!work.active && getRoles.find((id: string) => id === roleId)) await discordMember.roles.remove(role);
+        if (work.active && !getRoles.find((id: string) => id === roleId)) discordMember.roles.add(role);
+        if (!work.active && getRoles.find((id: string) => id === roleId)) discordMember.roles.remove(role);
         if (work.active) worker = true;
       })
 
     }
+
+    await Promise.all(roleUpdatePromises);
 
     const daoRole = await guild.roles.fetch(RoleAddress.DAO);
 
@@ -200,10 +202,10 @@ export const setMemberRole = async (client: Client): Promise<void> => {
       return;
     }
 
-    if ((worker || qnMember.isCouncilMember) && !getRoles.find((id: string) => id === RoleAddress.DAO)) await discordMember.roles.add(daoRole)
-    if (!(worker || qnMember.isCouncilMember) && getRoles.find((id: string) => id === RoleAddress.DAO)) await discordMember.roles.remove(daoRole)
+    if ((worker || qnMember.isCouncilMember) && !getRoles.find((id: string) => id === RoleAddress.DAO)) discordMember.roles.add(daoRole)
+    if (!(worker || qnMember.isCouncilMember) && getRoles.find((id: string) => id === RoleAddress.DAO)) discordMember.roles.remove(daoRole)
 
-    await Promise.all(roleUpdatePromises);
+
 
     /// concile, founding, creator part  ///
     const specialRoles = [
@@ -229,8 +231,8 @@ export const setMemberRole = async (client: Client): Promise<void> => {
         return;
       }
 
-      if (specialRole.isActive && !getRoles.find((id: string) => id === specialRole.roleId)) await discordMember.roles.add(role);
-      if (!specialRole.isActive && getRoles.find((id: string) => id === specialRole.roleId)) await discordMember.roles.remove(role);
+      if (specialRole.isActive && !getRoles.find((id: string) => id === specialRole.roleId)) discordMember.roles.add(role);
+      if (!specialRole.isActive && getRoles.find((id: string) => id === specialRole.roleId)) discordMember.roles.remove(role);
 
     });
 
