@@ -189,10 +189,12 @@ export const setMemberRole = async (client: Client): Promise<void> => {
       worker = true;
     })
 
+    await Promise.all(rolesMember);
+
     const terminatedRoles = discordMemberRolesIds.filter(item => !activeRoles.includes(item))
     terminatedRoles.forEach(id => discordMember.roles.remove(id));
+    await Promise.all(terminatedRoles);
 
-    await Promise.all(rolesMember);
 
     if ((worker || qnMember.isCouncilMember) && !discordMemberRolesIds.find((id: string) => id === RoleAddress.DAO)) discordMember.roles.add(daoRole)
     if (!(worker || qnMember.isCouncilMember) && discordMemberRolesIds.find((id: string) => id === RoleAddress.DAO)) discordMember.roles.remove(daoRole)
