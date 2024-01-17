@@ -163,17 +163,18 @@ export const setMemberRole = async (client: Client): Promise<void> => {
       await discordMember.roles.add(linkRole);
     }
 
-    const rolesMember = qnMember.roles.filter(group => group.status.__typename === "WorkerStatusActive");
+    const qnMemberActiveRoles = qnMember.roles.filter(group => group.status.__typename === "WorkerStatusActive");
 
     let worker = false;
 
-    let activeRoles: string[] = [];
+    let qnMemberRole: string[] = [];
 
-    rolesMember.forEach(async (work) => {
+    qnMemberActiveRoles.forEach(async (work) => {
       const mappedRoles = roleMap[work.groupId];
 
-      if (!mappedRoles) return;
-
+      if (!mappedRoles) {
+        return;
+      }
       const [leadRoleId, workerRoleId] = mappedRoles;
 
       const roleId = work.isLead ? leadRoleId : workerRoleId;
@@ -184,20 +185,25 @@ export const setMemberRole = async (client: Client): Promise<void> => {
         console.log(`<@&${roleId}> Role not found`);
         return;
       }
-      if (!discordMemberRolesIds.find((id: string) => id === roleId)) discordMember.roles.add(role);
-      activeRoles.push(roleId);
+      if (!discordMemberRolesIds.find((id: string) => id === roleId)) {
+        discordMember.roles.add(role);
+      }
+      qnMemberRole.push(roleId);
       worker = true;
     })
 
-    await Promise.all(rolesMember);
+    await Promise.all(qnMemberActiveRoles);
 
-    const terminatedRoles = discordMemberRolesIds.filter(item => !activeRoles.includes(item))
-    terminatedRoles.forEach(id => discordMember.roles.remove(id));
-    await Promise.all(terminatedRoles);
+    const terminatedRoles = discordMemberRolesIds.filter(item => !qnMemberRole.includes(item))
+    const terminatedRolesPromises = terminatedRoles.map(id => discordMember.roles.remove(id));
+    await Promise.all(terminatedRolesPromises);
 
-
-    if ((worker || qnMember.isCouncilMember) && !discordMemberRolesIds.find((id: string) => id === RoleAddress.DAO)) discordMember.roles.add(daoRole)
-    if (!(worker || qnMember.isCouncilMember) && discordMemberRolesIds.find((id: string) => id === RoleAddress.DAO)) discordMember.roles.remove(daoRole)
+    if ((worker || qnMember.isCouncilMember) && !discordMemberRolesIds.find((id: string) => id === RoleAddress.DAO)) {
+      discordMember.roles.add(daoRole)
+    }
+    if (!(worker || qnMember.isCouncilMember) && discordMemberRolesIds.find((id: string) => id === RoleAddress.DAO)) {
+      discordMember.roles.remove(daoRole)
+    }
 
     /// concile, founding, creator part  ///
     const specialRoles = [
@@ -224,8 +230,13 @@ export const setMemberRole = async (client: Client): Promise<void> => {
         return;
       }
 
-      if (specialRole.isActive && !discordMemberRolesIds.find((id: string) => id === specialRole.roleId)) discordMember.roles.add(role);
-      if (!specialRole.isActive && discordMemberRolesIds.find((id: string) => id === specialRole.roleId)) discordMember.roles.remove(role);
+      if (specialRole.isActive && !discordMemberRolesIds.find((id: string) => id === specialRole.roleId)) {
+        discordMember.roles.add(role);
+      }
+
+      if (!specialRole.isActive && discordMemberRolesIds.find((id: string) => id === specialRole.roleId)) {
+        discordMember.roles.remove(role);
+      }
 
     });
 
