@@ -133,7 +133,10 @@ async function getDiscordHandleToTargetRolesMap(): Promise<
 }
 
 export const runUpdate = async (client: Client): Promise<void> => {
-  console.log("Discord server update start...");
+  const DEBUG = process.env.DEBUG === "true";
+  console.log(
+    `Discord server update (DEBUG=${DEBUG}) start at ${new Date().toISOString()}...`,
+  );
 
   const guild = client.guilds.cache.get(String(process.env.SERVER_ID));
 
@@ -167,8 +170,6 @@ export const runUpdate = async (client: Client): Promise<void> => {
   const discordHandleToTargetRolesMap =
     await getDiscordHandleToTargetRolesMap();
 
-  const DEBUG = true;
-
   const added: string[] = [];
   const removed: string[] = [];
 
@@ -186,22 +187,19 @@ export const runUpdate = async (client: Client): Promise<void> => {
       (role) => !targetRoles.includes(role),
     );
     const addRolePromises = rolesToAdd.map((role) => {
-      if (DEBUG) {
-        added.push(
-          `Adding ${guild.roles.cache.get(role)
-            ?.name} role to ${discordHandle}`,
-        );
-      } else {
+      added.push(
+        `Adding ${guild.roles.cache.get(role)?.name} role to ${discordHandle}`,
+      );
+      if (!DEBUG) {
         return member.roles.add(role);
       }
     });
     const removeRolePromises = rolesToRemove.map((role) => {
-      if (DEBUG) {
-        removed.push(
-          `Removing ${guild.roles.cache.get(role)
-            ?.name} role from ${discordHandle}`,
-        );
-      } else {
+      removed.push(
+        `Removing ${guild.roles.cache.get(role)
+          ?.name} role from ${discordHandle}`,
+      );
+      if (!DEBUG) {
         return member.roles.remove(role);
       }
     });
@@ -210,10 +208,8 @@ export const runUpdate = async (client: Client): Promise<void> => {
 
   await Promise.all(updatePromises);
 
-  if (DEBUG) {
-    console.log(added.join("\n"));
-    console.log(removed.join("\n"));
-  }
+  console.log(added.join("\n"));
+  console.log(removed.join("\n"));
 
   console.log("Discord server update finish!");
   lastUpdateTime = new Date().toISOString();
