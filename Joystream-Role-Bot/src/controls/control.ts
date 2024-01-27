@@ -132,12 +132,25 @@ async function getDiscordHandleToTargetRolesMap(): Promise<
   return discordHandleToTargetRolesMap;
 }
 
-export const runUpdate = async (client: Client): Promise<void> => {
-  const DEBUG = process.env.DEBUG === "true";
-  console.log(
-    `Discord server update (DEBUG=${DEBUG}) start at ${new Date().toISOString()}...`,
-  );
+const DEBUG = process.env.DEBUG === "true";
 
+export const runUpdate = async (client: Client): Promise<void> => {
+  try {
+    console.log(
+      `Discord server update (DEBUG=${DEBUG}) start at ${new Date().toISOString()}...`,
+    );
+
+    await _runUpdate(client);
+
+    console.log("Discord server update finish!");
+    lastUpdateTime = new Date().toISOString();
+  } catch (e) {
+    console.error("Failed to run update");
+    console.error(e);
+  }
+};
+
+const _runUpdate = async (client: Client): Promise<void> => {
   const guild = client.guilds.cache.get(String(process.env.SERVER_ID));
 
   if (!guild) {
@@ -210,9 +223,6 @@ export const runUpdate = async (client: Client): Promise<void> => {
 
   console.log(added.join("\n"));
   console.log(removed.join("\n"));
-
-  console.log("Discord server update finish!");
-  lastUpdateTime = new Date().toISOString();
 };
 
 interface MemberRolesAndId {
