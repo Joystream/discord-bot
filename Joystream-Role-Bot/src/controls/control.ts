@@ -132,15 +132,18 @@ async function getDiscordHandleToTargetRolesMap(): Promise<
   return discordHandleToTargetRolesMap;
 }
 
-const DEBUG = process.env.DEBUG === "true";
-
 export const runUpdate = async (client: Client): Promise<void> => {
+  const DEBUG = process.env.DEBUG === "true";
   try {
     console.log(
       `Discord server update (DEBUG=${DEBUG}) start at ${new Date().toISOString()}...`,
     );
 
-    await _runUpdate(client);
+    if (!DEBUG) {
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+    }
+
+    await _runUpdate(client, DEBUG);
 
     console.log("Discord server update finish!");
     lastUpdateTime = new Date().toISOString();
@@ -150,7 +153,7 @@ export const runUpdate = async (client: Client): Promise<void> => {
   }
 };
 
-const _runUpdate = async (client: Client): Promise<void> => {
+const _runUpdate = async (client: Client, DEBUG: boolean): Promise<void> => {
   const guild = client.guilds.cache.get(String(process.env.SERVER_ID));
 
   if (!guild) {
@@ -173,11 +176,7 @@ const _runUpdate = async (client: Client): Promise<void> => {
     }
   }
 
-  // get all Discord members that have a role managed by the bot
   const managedRoles = Object.values(RoleAddress);
-  const discordMembersWithManagedRoles = discordMembers.filter((member) =>
-    member.roles.cache.some((role) => managedRoles.includes(role.id)),
-  );
 
   // get all QN members that have a Discord handle with their target roles
   const discordHandleToTargetRolesMap =
@@ -187,7 +186,7 @@ const _runUpdate = async (client: Client): Promise<void> => {
   const removed: string[] = [];
 
   // update Discord members
-  const updatePromises = discordMembersWithManagedRoles.map(async (member) => {
+  const updatePromises = discordMembers.map(async (member) => {
     const discordHandle = member.user.username;
     const targetRoles = discordHandleToTargetRolesMap[discordHandle] || [];
     const currentRoles = member.roles.cache
