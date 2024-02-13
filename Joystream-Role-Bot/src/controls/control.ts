@@ -56,81 +56,6 @@ type MemberInfo = {
   isFoundingMember: boolean;
   activeRoles: MemberFields["roles"];
 };
-async function getDiscordHandleToTargetRolesMap(): Promise<
-  Record<string, string[]>
-> {
-  const members = await getMembers();
-
-  // get all members for a given discord handle
-  const discordHandleToMembersMap: Record<string, MemberFields[]> = {};
-  members.forEach((member) => {
-    const discordHandle = member.externalResources?.find(
-      (data) => data.type === "DISCORD",
-    )?.value;
-    if (!discordHandle) return;
-    if (!discordHandleToMembersMap[discordHandle]) {
-      discordHandleToMembersMap[discordHandle] = [];
-    }
-    discordHandleToMembersMap[discordHandle].push(member);
-  });
-
-  // TODO: refactor - this is currently used to share QN data with other commands
-  qn_recive_data = members;
-
-  // get parsed info for a given discord handle
-  const discordHandleToMemberInfoMap: Record<string, MemberInfo> = {};
-  Object.entries(discordHandleToMembersMap).forEach(
-    ([discordHandle, members]) => {
-      const isCouncilMember = members.some((member) => member.isCouncilMember);
-      const isFoundingMember = members.some(
-        (member) => member.isFoundingMember,
-      );
-      const activeRoles = members.flatMap((member) =>
-        member.roles.filter(
-          (group) => group.status.__typename === "WorkerStatusActive",
-        ),
-      );
-      discordHandleToMemberInfoMap[discordHandle] = {
-        isCouncilMember,
-        isFoundingMember,
-        activeRoles,
-      };
-    },
-  );
-
-  // get target roles for a given discord handle
-  const discordHandleToTargetRolesMap: Record<string, string[]> = {};
-  Object.entries(discordHandleToMemberInfoMap).forEach(
-    ([discordHandle, memberInfo]) => {
-      const targetRoles: string[] = [];
-      targetRoles.push(RoleAddress.membershipLinked);
-      if (memberInfo.isCouncilMember) {
-        targetRoles.push(RoleAddress.councilMember);
-      }
-      if (memberInfo.isCouncilMember || memberInfo.activeRoles.length > 0) {
-        targetRoles.push(RoleAddress.DAO);
-      }
-      // if (memberInfo.isFoundingMember) {
-      //   targetRoles.push(RoleAddress.foundingMember);
-      // }
-      memberInfo.activeRoles.forEach((role) => {
-        const mappedRoles = roleMap[role.groupId];
-        if (!mappedRoles) return;
-        const [leadRoleId, workerRoleId] = mappedRoles;
-        if (!targetRoles.includes(workerRoleId)) {
-          targetRoles.push(workerRoleId);
-        }
-        if (role.isLead) {
-          targetRoles.push(leadRoleId);
-        }
-      });
-
-      discordHandleToTargetRolesMap[discordHandle] = targetRoles;
-    },
-  );
-
-  return discordHandleToTargetRolesMap;
-}
 
 export const runUpdate = async (client: Client): Promise<void> => {
   const DEBUG = process.env.DEBUG === "true";
@@ -263,3 +188,79 @@ export const getUserId = (userId: string): MemberRolesAndId | undefined => {
     roles: role,
   };
 };
+
+async function getDiscordHandleToTargetRolesMap(): Promise<
+  Record<string, string[]>
+> {
+  const members = await getMembers();
+
+  // get all members for a given discord handle
+  const discordHandleToMembersMap: Record<string, MemberFields[]> = {};
+  members.forEach((member) => {
+    const discordHandle = member.externalResources?.find(
+      (data) => data.type === "DISCORD",
+    )?.value;
+    if (!discordHandle) return;
+    if (!discordHandleToMembersMap[discordHandle]) {
+      discordHandleToMembersMap[discordHandle] = [];
+    }
+    discordHandleToMembersMap[discordHandle].push(member);
+  });
+
+  // TODO: refactor - this is currently used to share QN data with other commands
+  qn_recive_data = members;
+
+  // get parsed info for a given discord handle
+  const discordHandleToMemberInfoMap: Record<string, MemberInfo> = {};
+  Object.entries(discordHandleToMembersMap).forEach(
+    ([discordHandle, members]) => {
+      const isCouncilMember = members.some((member) => member.isCouncilMember);
+      const isFoundingMember = members.some(
+        (member) => member.isFoundingMember,
+      );
+      const activeRoles = members.flatMap((member) =>
+        member.roles.filter(
+          (group) => group.status.__typename === "WorkerStatusActive",
+        ),
+      );
+      discordHandleToMemberInfoMap[discordHandle] = {
+        isCouncilMember,
+        isFoundingMember,
+        activeRoles,
+      };
+    },
+  );
+
+  // get target roles for a given discord handle
+  const discordHandleToTargetRolesMap: Record<string, string[]> = {};
+  Object.entries(discordHandleToMemberInfoMap).forEach(
+    ([discordHandle, memberInfo]) => {
+      const targetRoles: string[] = [];
+      targetRoles.push(RoleAddress.membershipLinked);
+      if (memberInfo.isCouncilMember) {
+        targetRoles.push(RoleAddress.councilMember);
+      }
+      if (memberInfo.isCouncilMember || memberInfo.activeRoles.length > 0) {
+        targetRoles.push(RoleAddress.DAO);
+      }
+      // if (memberInfo.isFoundingMember) {
+      //   targetRoles.push(RoleAddress.foundingMember);
+      // }
+      memberInfo.activeRoles.forEach((role) => {
+        const mappedRoles = roleMap[role.groupId];
+        if (!mappedRoles) return;
+        const [leadRoleId, workerRoleId] = mappedRoles;
+        if (!targetRoles.includes(workerRoleId)) {
+          targetRoles.push(workerRoleId);
+        }
+        if (role.isLead) {
+          targetRoles.push(leadRoleId);
+        }
+      });
+
+      discordHandleToTargetRolesMap[discordHandle] = targetRoles;
+    },
+  );
+
+  return discordHandleToTargetRolesMap;
+}
