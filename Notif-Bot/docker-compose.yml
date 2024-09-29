@@ -5,4 +5,7 @@ services:
       - .env
     restart: unless-stopped
     volumes:
-      - ./data:/usr/src/app/data
+      - notifs-db:/usr/src/app/data
+
+volumes:
+  notifs-db:
