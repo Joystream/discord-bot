@@ -1,0 +1,22 @@
+query GetProposals {
+  proposals(
+    limit: 15
+    orderBy: createdAt_DESC
+    where: { isFinalized_eq: false }
+  ) {
+    id
+    createdAt
+    title
+    creator {
+      id
+      handle
+    }
+    status {
+      __typename
+    }
+    details {
+      __typename
+    }
+    statusSetAtBlock
+  }
+}
